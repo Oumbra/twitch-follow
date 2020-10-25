@@ -1,0 +1,36 @@
+:host {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+
+    > *:not(:first-child) {
+        margin-left: 10px;
+    }
+
+    .app-streamer {
+
+        &_logo {
+            width: 48px;
+            border-radius: 50%;
+            border: 3px solid;
+            
+            &--enable {
+                border-color: green;
+            }
+            &--disable {
+                border-color: red;
+            }
+        }
+
+        &_name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-transform: capitalize;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+    }
+}

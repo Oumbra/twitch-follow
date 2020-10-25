@@ -1,0 +1,11 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+
+    .main-view {
+        &_add {
+            margin: 10px 0;
+        }
+    }
+}

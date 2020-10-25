@@ -1,0 +1,9 @@
+<img [src]="logo" 
+    class="app-streamer_logo" 
+    [ngClass]="{'app-streamer_logo--enable': status, 'app-streamer_logo--disable': !status}"/>
+    
+<div class="app-streamer_name">{{name}}</div>
+
+<button class="app-streamer_action" mat-icon-button>
+    <mat-icon>delete_outline</mat-icon>
+</button>
