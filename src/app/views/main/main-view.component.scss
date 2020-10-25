@@ -1,11 +1,22 @@
 :host {
     display: flex;
-    flex-direction: column;
-    padding-top: 10px;
+    flex-wrap: wrap;
+    align-content: space-between;
+    height: 100%;
+
+    & > * {
+        width: 100%;
+    }
 
     .main-view {
+
+        &_container {
+            display: flex;
+            flex-direction: column;
+        }
+        
         &_add {
-            margin: 10px 0;
+            margin: 5px;
         }
     }
 }

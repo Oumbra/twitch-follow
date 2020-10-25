@@ -1,13 +1,13 @@
-<app-streamer 
-    *ngFor="let item of list"
-    [name]="item.name" 
-    [status]="item.status"
-    [logo]="item.logo">
-</app-streamer>
+<div class="main-view_container">
+    <app-streamer 
+        *ngFor="let item of list"
+        [name]="item.name" 
+        [status]="item.status"
+        [logo]="item.logo">
+    </app-streamer>
+</div>
 
-<button class="main-view_add" 
-        mat-stroked-button
-        routerLink="/addition">
+<button class="main-view_add" mat-flat-button routerLink="/addition">
     <mat-icon>add</mat-icon>
     Ajouter
 </button>

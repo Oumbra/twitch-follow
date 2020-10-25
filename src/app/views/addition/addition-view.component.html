@@ -1,6 +1,18 @@
-<button class="addition-view_back" 
-        mat-stroked-button
-        routerLink="/main">
-    <mat-icon>chevron_right</mat-icon>
+<div class="addition-view_container">
+
+    <mat-form-field floatLabel="never">
+        <input matInput placeholder="Recherche..." 
+            [(ngModel)]="search" 
+            (ngModelChange)="searchUpdate.next($event)" />
+    </mat-form-field>
+    
+</div>
+
+<div class="addition-view_spinner" *ngIf="searching">
+    <mat-spinner diameter="65"></mat-spinner>
+</div>
+
+<button class="addition-view_back" mat-flat-button routerLink="/main">
+    <mat-icon>chevron_left</mat-icon>
     Retour
 </button>

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatCardModule, MatGridListModule, MatIconModule, MatMenuModule, MatToolbarModule, MatTooltipModule } from '@angular/material';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatCardModule, MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatProgressSpinnerModule, MatToolbarModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -15,7 +16,8 @@ const MAT_MODULES = [
   MatToolbarModule,
   MatGridListModule,
   MatButtonModule,
-  MatTooltipModule,
+  MatInputModule,
+  MatProgressSpinnerModule,
 ];
 
 @NgModule({
@@ -28,6 +30,7 @@ const MAT_MODULES = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,    
     AppRoutingModule,
     ...MAT_MODULES,
   ],

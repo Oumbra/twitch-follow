@@ -1,24 +1,26 @@
 // @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+// @import '@angular/material/prebuilt-themes/indigo-pink.css';
+// @import '@angular/material/prebuilt-themes/pink-bluegrey.css';
+// @import '@angular/material/prebuilt-themes/purple-green.css';
+
+
 @import '~@angular/material/theming';
 @include mat-core();
-
-// hue. Available color palettes: https://material.io/design/color/
-$default-app-primary: mat-palette($mat-indigo);
-$default-app-accent:  mat-palette($mat-pink, A200, A100, A400);
-// The warn palette is optional (defaults to red).
+$default-app-primary: mat-palette($mat-purple);
+$default-app-accent:  mat-palette($mat-green);
 $default-app-warn:    mat-palette($mat-red);
-
-$default-theme: mat-dark-theme($default-app-primary, $default-app-accent, $default-app-warn);
+$default-theme: mat-light-theme($default-app-primary, $default-app-accent, $default-app-warn);
 
 @include angular-material-theme($default-theme);
 
 /* You can add global styles to this file, and also import other style files */
 html, body {
     height: 100%;
-    width: 100%;
+    width: 240px;
+    max-height: 300px;
 }
 body {
     margin: 0;
     font-family: Roboto,"Helvetica Neue",sans-serif;
-    width: 240px;
+    font-size: 14px;
 }
