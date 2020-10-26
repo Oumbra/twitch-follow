@@ -1,6 +1,4 @@
 chrome.runtime.onInstalled.addListener((arg) => {
-    chrome.storage.sync.set({ color: '#3aa757' });
-
     log(`installed !`, arg);
 
     // chrome.webNavigation.onCompleted.addListener((details) => {
@@ -30,4 +28,10 @@ function log(message: string, ...args: any) {
     const now = new Date();
     const format = `${now.toLocaleDateString('fr-FR')} ${now.toLocaleTimeString('fr-FR')}`;
     console.log(`${format} | ${message}`, ...args);
+}
+
+function obj(key: string, value: string): { [key: string]: any } {
+    const _ = {};
+    _[key] = value;
+    return _;
 }

@@ -4,8 +4,11 @@ import { MatButtonModule, MatCardModule, MatGridListModule, MatIconModule, MatIn
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
+
 import { AppComponent } from './app.component';
 import { StreamerComponent } from './components/streamer/streamer.component';
+
 import { AdditionViewComponent } from './views/addition/addition-view.component';
 import { MainViewComponent } from './views/main/main-view.component';
 
@@ -32,6 +35,7 @@ const MAT_MODULES = [
     BrowserAnimationsModule,
     FormsModule,    
     AppRoutingModule,
+    HttpClientModule,
     ...MAT_MODULES,
   ],
   providers: [],

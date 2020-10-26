@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { Channel } from 'src/app/models/channel';
+import { TwitchResponse } from 'src/app/models/twitch-response';
+import { TwitchService } from 'src/app/services/twitch.service';
 
 @Component({
     templateUrl : './addition-view.component.html',
@@ -11,27 +14,31 @@ export class AdditionViewComponent implements OnInit {
     search: string;
     searching: boolean;
     searchUpdate: Subject<string>;
+    results: Channel[];
 
-    constructor() {
+    constructor(private twitchSrv: TwitchService) {
         this.searchUpdate = new Subject<string>();
     }
 
     ngOnInit() { 
         this.searchUpdate.pipe(
             debounceTime(500),
-            distinctUntilChanged(),
-            tap(() => this.searching = true)
+            tap(() => this.searching = true),
+            switchMap(query => this.twitchSrv.searchChannel({ query })),
         )
         .subscribe(
-            value => this.searchIntoTwitch(value), 
-            () => this.searching = false
+            response => {
+                console.log(`response`, response);
+                this.formatResponse(response);
+            },
+            () => this.formatResponse({ data: [], pagination: {}})
         );
     }
 
 
-    private searchIntoTwitch(twitchId: string) {
-        console.log(`search : ${twitchId}`);
-        setTimeout(() => this.searching = false, 500);
+    private formatResponse(response: TwitchResponse<Channel>) {
+        this.searching = false;
+        this.results = response.data;
     }
 
 }

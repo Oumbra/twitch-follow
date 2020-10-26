@@ -12,6 +12,15 @@
     <mat-spinner diameter="65"></mat-spinner>
 </div>
 
+<div *ngIf="!searching && results?.length > 0">
+    <app-streamer *ngFor="let result of results"
+    [name]="result.display_name"
+    [logo]="result.thumbnail_url"
+    [status]="result.is_live">
+</app-streamer>
+</div>
+<span *ngIf="!searching && results?.length === 0">Aucun résultat</span>
+
 <button class="addition-view_back" mat-flat-button routerLink="/main">
     <mat-icon>chevron_left</mat-icon>
     Retour
