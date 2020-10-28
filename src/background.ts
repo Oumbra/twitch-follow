@@ -1,3 +1,5 @@
+import { log } from "./app/app.utils";
+
 chrome.runtime.onInstalled.addListener((arg) => {
     log(`installed !`, arg);
 
@@ -20,18 +22,4 @@ chrome.runtime.onInstalled.addListener((arg) => {
 
 chrome.runtime.onStartup.addListener(() => {
     log(`startup !`);
-
 });
-
-
-function log(message: string, ...args: any) {
-    const now = new Date();
-    const format = `${now.toLocaleDateString('fr-FR')} ${now.toLocaleTimeString('fr-FR')}`;
-    console.log(`${format} | ${message}`, ...args);
-}
-
-function obj(key: string, value: string): { [key: string]: any } {
-    const _ = {};
-    _[key] = value;
-    return _;
-}

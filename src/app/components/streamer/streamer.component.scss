@@ -4,16 +4,14 @@
     justify-content: space-between;
     padding: 5px;
 
-    > *:not(:first-child) {
-        margin-left: 10px;
-    }
-
     .app-streamer {
 
         &_logo {
-            width: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border: 3px solid;
+            overflow: hidden;
             
             &--enable {
                 border-color: green;
@@ -30,6 +28,7 @@
             text-transform: capitalize;
             font-weight: bold;
             font-size: 16px;
+            max-width: 105px
         }
 
     }

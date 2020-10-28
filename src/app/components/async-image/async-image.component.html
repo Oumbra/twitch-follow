@@ -1,0 +1,12 @@
+<div class="async-image">
+    <img [src]="safeUrl" alt="image chargée"
+        [ngClass]="{'async-image--loaded': status === ELoadState.SUCCESSED}"
+        #asyncImage />
+    
+    <mat-icon class="async-image_default" *ngIf="status === ELoadState.FAILED">
+        broken_image
+    </mat-icon>
+    
+    <mat-spinner diameter="30" *ngIf="status === ELoadState.IN_PROGRESS"></mat-spinner>
+    <ng-content *ngIf="status !== ELoadState.IN_PROGRESS"></ng-content>
+</div>

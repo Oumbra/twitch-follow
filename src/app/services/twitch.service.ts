@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { CLIENT_ID } from '../app.constantes';
+import { log, standardCatchError } from '../app.utils';
 import { Channel } from '../models/channel';
 import { ChannelSearchOpts } from '../models/channel-search-opts';
 import { StreamSearchOpts } from '../models/stream-search-opts';
@@ -31,10 +32,7 @@ export class TwitchService {
                         pagination: datas.pagination,
                     }
                 }),
-                catchError((e, obs) => {
-                    console.log("error", e);
-                    return throwError(e);
-                })
+                catchError(standardCatchError)
             );
     }
 
@@ -47,10 +45,7 @@ export class TwitchService {
                     pagination: datas.pagination,
                 }
             }),
-            catchError((e, obs) => {
-                console.log("error", e);
-                return throwError(e);
-            })
+            catchError(standardCatchError)
         );
     }
 

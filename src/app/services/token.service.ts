@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
 import { Observable, of, throwError } from 'rxjs';
 import { CLIENT_ID, CLIENT_SECRET, TWITCH_TOKEN_NAME } from '../app.constantes';
+import { log, obj, standardCatchError } from '../app.utils';
 
 @Injectable({
     providedIn: 'root',
@@ -20,10 +21,7 @@ export class TokenService {
         return this.recoverToken()
             .pipe(
                 switchMap(token => !!token ? this.validToken(token) : this.refreshToken()),
-                catchError((e, obs) => {
-                    console.log("error", e);
-                    return throwError(e);
-                }),
+                catchError(standardCatchError),
             );
     }
 
@@ -35,10 +33,7 @@ export class TokenService {
                     ? of(token)
                     : this.refreshToken()
                 ),
-                catchError((e, obs) => {
-                    console.log("error", e);
-                    return throwError(e);
-                }),
+                catchError(standardCatchError),
             );
     }
 
@@ -46,11 +41,8 @@ export class TokenService {
         return this.httpClient.post(`${this.TOKEN_URL}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`, null, { responseType: 'json' })
             .pipe(
                 map((datas: any) => datas.access_token),
-                tap(token => chrome.storage.sync.set(this.obj(TWITCH_TOKEN_NAME, token))),
-                catchError((e, obs) => {
-                    console.log("error", e);
-                    return throwError(e);
-                }),
+                tap(token => chrome.storage.sync.set(obj(TWITCH_TOKEN_NAME, token))),
+                catchError(standardCatchError),
             );
     }
 
@@ -63,9 +55,4 @@ export class TokenService {
         });
     }
 
-    private obj(key: string, value: string): { [key: string]: any } {
-        const _ = {};
-        _[key] = value;
-        return _;
-    }
 }

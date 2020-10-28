@@ -1,0 +1,32 @@
+.async-image {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > img {
+    position: absolute;
+    transition: all .5s ease;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  &--loading {
+    opacity: 0;
+  }
+
+  & > &--loaded {
+    opacity: 1;
+  }
+
+  &_default--reverse-color {
+    color: white;
+  }
+
+  &, & > img, &_default {
+    width: 100%;
+    height: 100%;
+  }
+
+}

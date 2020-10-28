@@ -10,16 +10,20 @@
 
     .addition-view {
 
-        &_container {
-            display: flex;
-            flex-direction: column;
-            padding: 0 5px;
+        &_input {
+            padding: 0 10px;
         }
 
-        &_spinner {
-            width: 100%;
+        &_container {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
+            overflow: auto;
+            height: calc(100% - 57px - 36px);
+
+            & > app-streamer {
+                width: 100%;
+            }
         }
 
         &_back {

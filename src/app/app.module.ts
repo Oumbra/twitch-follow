@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
+import { AsyncImageComponent } from './components/async-image/async-image.component';
 import { StreamerComponent } from './components/streamer/streamer.component';
 
 import { AdditionViewComponent } from './views/addition/addition-view.component';
@@ -26,6 +27,7 @@ const MAT_MODULES = [
 @NgModule({
   declarations: [
     AppComponent,
+    AsyncImageComponent,
     StreamerComponent,
     MainViewComponent,
     AdditionViewComponent,
