@@ -15,7 +15,7 @@ export class StreamerComponent implements AfterViewInit {
   @Input() name: string;
   @Input() status: boolean;
 
-  needTitle: boolean = false;
+  title: string = '';
 
   get el() {
     return this.element.nativeElement;
@@ -23,8 +23,9 @@ export class StreamerComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     const pixelWidth = measureText(this.el.textContent, '15px Roboto');
-    this.needTitle = this.el.offsetWidth > 105 || pixelWidth > 105;
+    if (this.el.offsetWidth > 105 || pixelWidth > 105) {
+      setTimeout(() => this.title = this.name, 10);
+    }
   }
-
   
 }

@@ -1,11 +1,11 @@
 export interface Channel {
-    broadcaster_language: string;
-    display_name: string;
     game_id: number;
     id: number;
-    is_live: boolean;
-    tags_ids: string[];
-    thumbnail_url: string;
+    display_name: string;
+    broadcaster_language: string;
     title: string;
+    thumbnail_url: string;
+    is_live: boolean;
     started_at: Date;
+    tags_ids: string[];
 }

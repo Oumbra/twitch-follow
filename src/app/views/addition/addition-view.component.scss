@@ -14,16 +14,44 @@
             padding: 0 10px;
         }
 
-        &_container {
+        &_spinner {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+        }
+
+        &_container {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: center;
+            height: calc(100% - 57px - 46px);
+            transition: height .5s;
+
+            > span {
+                align-self: center;
+            }
+
+            &--opened {
+                height: 150%;
+            }
+        }
+
+        &_results {
+            display: flex;
+            flex-wrap: wrap;
             overflow: auto;
-            height: calc(100% - 57px - 36px);
+            flex: 1;
 
             & > app-streamer {
                 width: 100%;
             }
+        }
+
+        &_navigation {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
 
         &_back {

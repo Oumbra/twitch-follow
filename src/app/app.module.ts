@@ -12,6 +12,7 @@ import { StreamerComponent } from './components/streamer/streamer.component';
 
 import { AdditionViewComponent } from './views/addition/addition-view.component';
 import { MainViewComponent } from './views/main/main-view.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 const MAT_MODULES = [
   MatCardModule,
@@ -38,6 +39,7 @@ const MAT_MODULES = [
     FormsModule,    
     AppRoutingModule,
     HttpClientModule,
+    NgxSpinnerModule,
     ...MAT_MODULES,
   ],
   providers: [],

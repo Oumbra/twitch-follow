@@ -4,29 +4,45 @@
     (ngModelChange)="searchUpdate.next($event)" />
 </mat-form-field>
     
-<div class="addition-view_container">
-    <mat-spinner diameter="65" *ngIf="searching"></mat-spinner>
-    
-    <span *ngIf="!searching && results?.length === 0">Aucun résultat</span>
+<!-- <div class="addition-view_spinner" *ngIf="searching">
+</div> -->
+<ngx-spinner [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium" color="#9c27b0"></ngx-spinner>
 
-    <ng-container *ngIf="!searching && results?.length > 0">
-        <span>{{results.length}} résultat(s)</span>
+<div class="addition-view_container" [ngClass]="{'addition-view_container--opened': total > 0}" *ngIf="!searching">
+    <span *ngIf="!searching && total === 0">Aucun résultat</span>
 
-        <app-streamer *ngFor="let result of results"
-            [name]="result.display_name"
-            [logo]="result.thumbnail_url"
-            [status]="result.is_live">
-            <button mat-icon-button>
-                <mat-icon>add_circle_outline</mat-icon>
+    <ng-container *ngIf="!searching && total > 0">
+        <span>{{total}} résultat(s)</span>
+            
+        <div class="addition-view_results">
+            <app-streamer *ngFor="let result of results"
+                [name]="result.display_name"
+                [logo]="result.thumbnail_url"
+                [status]="result.is_live">
+                <button mat-icon-button>
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                <button mat-icon-button *ngIf="false">
+                    <mat-icon>check_circle_outline</mat-icon>
+                </button>
+            </app-streamer>
+        </div>
+
+        <div class="addition-view_navigation">
+            <button mat-flat-button (click)="previous()" *ngIf="hasPrevious">
+                <mat-icon>west</mat-icon>
+                Précédent
             </button>
-            <button mat-icon-button *ngIf="false">
-                <mat-icon>check_circle_outline</mat-icon>
+            <div *ngIf="!hasNext || !hasPrevious"></div>
+            <button mat-flat-button (click)="next()" *ngIf="hasNext || !!cursor">
+                Suivant
+                <mat-icon>east</mat-icon>
             </button>
-        </app-streamer>
+        </div>
     </ng-container>
 </div>
 
-<button class="addition-view_back" mat-flat-button routerLink="/main">
+<button class="addition-view_back" mat-flat-button (click)="back()">
     <mat-icon>chevron_left</mat-icon>
     Retour
 </button>

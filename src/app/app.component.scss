@@ -14,6 +14,7 @@
             display: block;
             position: relative;
             height: calc(100% - 56px);
+            transition: height .5s;
         }
     }
 }

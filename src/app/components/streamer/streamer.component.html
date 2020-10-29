@@ -1,7 +1,7 @@
 <app-async-image [src]="logo" class="app-streamer_logo" [ngClass]="{'app-streamer_logo--enable': status, 'app-streamer_logo--disable': !status}">
 </app-async-image>
-    
-<div class="app-streamer_name" title="{{needTitle ? name : ''}}" #nameElement>
+
+<div class="app-streamer_name" [title]="title" #nameElement>
     {{name}}
 </div>
 
