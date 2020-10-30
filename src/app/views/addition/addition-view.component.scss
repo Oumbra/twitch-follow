@@ -37,6 +37,11 @@
             }
         }
 
+        &_spinner {
+            justify-content: center;
+            align-content: center;
+        }
+
         &_results {
             display: flex;
             flex-wrap: wrap;
@@ -45,6 +50,10 @@
 
             & > app-streamer {
                 width: 100%;
+            }
+
+            &--hidden {
+                display: none;
             }
         }
 

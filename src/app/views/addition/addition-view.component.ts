@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { log } from 'src/app/app.utils';
 import { AbstractComponent } from 'src/app/components/abstract.component';
 import { Channel } from 'src/app/models/channel';
@@ -16,8 +15,8 @@ import { TwitchService } from 'src/app/services/twitch.service';
 })
 export class AdditionViewComponent extends AbstractComponent implements OnInit {
 
-    search: string;
-    searchUpdate: Subject<string>;
+    query: string;
+    queryUpdate: Subject<string>;
     searching: boolean;
     hasPrevious: boolean;
     hasNext: boolean;
@@ -27,25 +26,30 @@ export class AdditionViewComponent extends AbstractComponent implements OnInit {
 
     private historics: LinkedList<Channel[]>;
 
+    @ViewChild('input', { static: true })
+    input: ElementRef<HTMLImageElement>;
+
     constructor(private router: Router,
-                private spinner: NgxSpinnerService,
                 private twitchSrv: TwitchService) {
         super();
-        this.searchUpdate = new Subject();
+        this.queryUpdate = new Subject();
         this.historics = new LinkedList();
         this.total = 0;
     }
 
-    ngOnInit() { 
-        this.searchUpdate.pipe(
+    ngOnInit() {
+        ;
+        this.queryUpdate.pipe(
                 takeUntil(this.ngDestroy$),
+                filter(query => !!query && query.length > 0),
                 debounceTime(500),
                 distinctUntilChanged(),
-                tap(() => this.updateSearchState(true)),
+                tap(() => this.input.nativeElement.dispatchEvent(new Event('blur'))),
+                tap(() => this.searching = true),
                 tap(() => this.historics = new LinkedList()),
-                tap(() => log('search starting...')),
+                tap(() => log('query starting...')),
                 switchMap(query => this.twitchSrv.searchChannel({ query })),
-                tap(() => log('search ended')),
+                tap(() => log('query ended')),
             )
             .subscribe(this.formatResponse(), this.formatResponse());
     }
@@ -53,20 +57,26 @@ export class AdditionViewComponent extends AbstractComponent implements OnInit {
     back(): void {
         setTimeout(() => this.router.navigate(['/main']), this.results ? 500 : 0);
         this.total = 0;
+        this.hasNext = false;
+        this.hasPrevious = false;
+        this.cursor = undefined;
     }
 
     next(): void {
+        const spinnerName: string = 'navigate';
         if (this.historics.hasNext) {
             this.results = this.historics.next;
             this.updateNavigation();
         } else {
-            log('search starting...');
-            this.twitchSrv.searchChannel({ after: this.cursor, query: this.search }).pipe(
-                    takeUntil(this.ngDestroy$),
-                    tap(() => this.updateSearchState(true)),
-                    tap(() => log('search ended')),
-                )
-                .subscribe(this.formatResponse(), this.formatResponse());
+            of('').pipe(
+                takeUntil(this.ngDestroy$),
+                debounceTime(500),
+                tap(() => this.searching = true),
+                tap(() => log('query starting...')),
+                switchMap(() => this.twitchSrv.searchChannel({ after: this.cursor, query: this.query })),
+                tap(() => log('query ended')),
+            )
+            .subscribe(this.formatResponse(), this.formatResponse());
         }
     }
 
@@ -82,7 +92,7 @@ export class AdditionViewComponent extends AbstractComponent implements OnInit {
                 response = { data: [], pagination: {}};
             }
             
-            this.updateSearchState(false);
+            this.searching = false;
             log('updateSearchState processed!');
             this.cursor = !!response.pagination ? response.pagination.cursor : undefined;
             log('extract cursor processed!');
@@ -97,21 +107,14 @@ export class AdditionViewComponent extends AbstractComponent implements OnInit {
             log('updateNavigation processed!');
 
             log('format ended');
+            
+            setTimeout(() => this.input.nativeElement.dispatchEvent(new Event('focus')), 100);
         };
     }
 
     private updateNavigation(): void {
         this.hasNext = this.historics.hasNext;
         this.hasPrevious = this.historics.hasPrevious;
-    }
-
-    private updateSearchState(state: boolean): void {
-        if (state) {
-            this.spinner.show();
-        } else {
-            this.spinner.hide();
-        }
-        this.searching = state;
     }
 
 }

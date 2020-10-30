@@ -1,45 +1,43 @@
 <mat-form-field floatLabel="never" class="addition-view_input">
-    <input matInput placeholder="Recherche..." 
-    [(ngModel)]="search" 
-    (ngModelChange)="searchUpdate.next($event)" />
+    <input matInput placeholder="Recherche..." [(ngModel)]="query" (ngModelChange)="queryUpdate.next($event)" #input />
 </mat-form-field>
-    
-<!-- <div class="addition-view_spinner" *ngIf="searching">
-</div> -->
-<ngx-spinner [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium" color="#9c27b0"></ngx-spinner>
 
-<div class="addition-view_container" [ngClass]="{'addition-view_container--opened': total > 0}" *ngIf="!searching">
-    <span *ngIf="!searching && total === 0">Aucun résultat</span>
+<!-- <ngx-spinner [fullScreen]="false" name="global" type="ball-clip-rotate-multiple" size="medium" color="#9c27b0"></ngx-spinner> -->
 
-    <ng-container *ngIf="!searching && total > 0">
-        <span>{{total}} résultat(s)</span>
-            
-        <div class="addition-view_results">
-            <app-streamer *ngFor="let result of results"
-                [name]="result.display_name"
-                [logo]="result.thumbnail_url"
-                [status]="result.is_live">
-                <button mat-icon-button>
-                    <mat-icon>add_circle_outline</mat-icon>
-                </button>
-                <button mat-icon-button *ngIf="false">
-                    <mat-icon>check_circle_outline</mat-icon>
-                </button>
-            </app-streamer>
-        </div>
-
-        <div class="addition-view_navigation">
-            <button mat-flat-button (click)="previous()" *ngIf="hasPrevious">
-                <mat-icon>west</mat-icon>
-                Précédent
+<div class="addition-view_container" [ngClass]="{'addition-view_container--opened': total > 0}">
+    <span class="addition-view_spinner" *ngIf="searching; else title">
+        <mat-spinner diameter="50"></mat-spinner>
+    </span>
+    <ng-template #title>
+        <span *ngIf="total === 0">Aucun résultat</span>
+        <span *ngIf="total > 0">{{total}} résultat(s)</span>
+    </ng-template>
+        
+    <div class="addition-view_results" [ngClass]="{'addition-view_results--hidden': searching || !query || total === 0}">
+        <app-streamer *ngFor="let result of results"
+            [name]="result.display_name"
+            [logo]="result.thumbnail_url"
+            [status]="result.is_live">
+            <button mat-icon-button>
+                <mat-icon>add_circle_outline</mat-icon>
             </button>
-            <div *ngIf="!hasNext || !hasPrevious"></div>
-            <button mat-flat-button (click)="next()" *ngIf="hasNext || !!cursor">
-                Suivant
-                <mat-icon>east</mat-icon>
+            <button mat-icon-button *ngIf="false">
+                <mat-icon>check_circle_outline</mat-icon>
             </button>
-        </div>
-    </ng-container>
+        </app-streamer>
+    </div>
+
+    <div class="addition-view_navigation" *ngIf="!searching && (hasNext || hasPrevious || !!cursor)">
+        <button mat-flat-button (click)="previous()" [disabled]="searching" *ngIf="hasPrevious">
+            <mat-icon>west</mat-icon>
+            Précédent
+        </button>
+        <div *ngIf="!hasNext || !hasPrevious"></div>
+        <button mat-flat-button (click)="next()" [disabled]="searching" *ngIf="hasNext || !!cursor">
+            Suivant
+            <mat-icon>east</mat-icon>
+        </button>
+    </div>
 </div>
 
 <button class="addition-view_back" mat-flat-button (click)="back()">
