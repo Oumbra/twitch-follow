@@ -1,19 +1,16 @@
 <mat-form-field floatLabel="never" class="addition-view_input">
-    <input matInput placeholder="Recherche..." [(ngModel)]="query" (ngModelChange)="queryUpdate.next($event)" #input />
+    <input matInput placeholder="Recherche..." [(ngModel)]="query" (ngModelChange)="query$.next($event)" #input />
 </mat-form-field>
 
-<!-- <ngx-spinner [fullScreen]="false" name="global" type="ball-clip-rotate-multiple" size="medium" color="#9c27b0"></ngx-spinner> -->
-
-<div class="addition-view_container" [ngClass]="{'addition-view_container--opened': total > 0}">
-    <span class="addition-view_spinner" *ngIf="searching; else title">
+<div class="addition-view_container" [ngClass]="{'addition-view_container--opened': !isEmpty}">
+    <span class="addition-view_spinner" *ngIf="searching && isEmpty; else title">
         <mat-spinner diameter="50"></mat-spinner>
     </span>
     <ng-template #title>
-        <span *ngIf="total === 0">Aucun résultat</span>
-        <span *ngIf="total > 0">{{total}} résultat(s)</span>
+        <span class="addition-view_counter">{{ isEmpty ? "Aucun résultat" : results.length +" résultat(s)"}}</span>
     </ng-template>
         
-    <div class="addition-view_results" [ngClass]="{'addition-view_results--hidden': searching || !query || total === 0}">
+    <div class="addition-view_results" [ngClass]="{'addition-view_results--hidden': !query || isEmpty }" (scroll)="scroll$.next($event)">
         <app-streamer *ngFor="let result of results"
             [name]="result.display_name"
             [logo]="result.thumbnail_url"
@@ -25,20 +22,14 @@
                 <mat-icon>check_circle_outline</mat-icon>
             </button>
         </app-streamer>
-    </div>
 
-    <div class="addition-view_navigation" *ngIf="!searching && (hasNext || hasPrevious || !!cursor)">
-        <button mat-flat-button (click)="previous()" [disabled]="searching" *ngIf="hasPrevious">
-            <mat-icon>west</mat-icon>
-            Précédent
-        </button>
-        <div *ngIf="!hasNext || !hasPrevious"></div>
-        <button mat-flat-button (click)="next()" [disabled]="searching" *ngIf="hasNext || !!cursor">
-            Suivant
-            <mat-icon>east</mat-icon>
-        </button>
+        <div class="addition-view_spinner" *ngIf="searching">
+            <mat-spinner diameter="50"></mat-spinner>
+        </div>
     </div>
 </div>
+
+<span style="display: none;"></span>
 
 <button class="addition-view_back" mat-flat-button (click)="back()">
     <mat-icon>chevron_left</mat-icon>

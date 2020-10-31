@@ -3,13 +3,11 @@ import { Observable, Subject } from 'rxjs';
 
 export abstract class AbstractComponent implements OnDestroy {
 
-    private _$: Subject<void> = new Subject<void>();
+    private destroy: Subject<void> = new Subject<void>();
+    protected destroy$: Observable<void> = this.destroy.asObservable();
 
     ngOnDestroy() {
-        this._$.next();
+        this.destroy.next();
     }
 
-    get ngDestroy$(): Observable<void> {
-        return this._$;
-    }
 }

@@ -15,16 +15,13 @@ import { TwitchService } from 'src/app/services/twitch.service';
 })
 export class AdditionViewComponent extends AbstractComponent implements OnInit {
 
-    query: string;
-    queryUpdate: Subject<string>;
-    searching: boolean;
-    hasPrevious: boolean;
-    hasNext: boolean;
-    results: Channel[];
     cursor: string;
-    total: number;
-
-    private historics: LinkedList<Channel[]>;
+    query: string;
+    searching: boolean;
+    isEmpty: boolean = true;
+    results: Channel[] = [];
+    query$: Subject<string> = new Subject();
+    scroll$: Subject<any> = new Subject();
 
     @ViewChild('input', { static: true })
     input: ElementRef<HTMLImageElement>;
@@ -32,57 +29,42 @@ export class AdditionViewComponent extends AbstractComponent implements OnInit {
     constructor(private router: Router,
                 private twitchSrv: TwitchService) {
         super();
-        this.queryUpdate = new Subject();
-        this.historics = new LinkedList();
-        this.total = 0;
     }
 
     ngOnInit() {
-        ;
-        this.queryUpdate.pipe(
-                takeUntil(this.ngDestroy$),
-                filter(query => !!query && query.length > 0),
+        this.query$.pipe(
+                takeUntil(this.destroy$),
                 debounceTime(500),
                 distinctUntilChanged(),
+                tap(() => this.results = []),
+                tap(() => this.isEmpty = true),
+                filter(query => !!query && query.length > 0),
                 tap(() => this.input.nativeElement.dispatchEvent(new Event('blur'))),
                 tap(() => this.searching = true),
-                tap(() => this.historics = new LinkedList()),
-                tap(() => log('query starting...')),
                 switchMap(query => this.twitchSrv.searchChannel({ query })),
-                tap(() => log('query ended')),
+            )
+            .subscribe(this.formatResponse(), this.formatResponse());
+
+        this.scroll$.pipe(
+                takeUntil(this.destroy$),
+                filter(() => !!this.cursor),
+                filter(e => e.target.offsetHeight + e.target.scrollTop === e.target.scrollHeight),
+                distinctUntilChanged(),
+                tap(() => log('end of scroll')),
+                tap(() => this.searching = true),
+                switchMap(() => this.twitchSrv.searchChannel({ after: this.cursor, query: this.query })),
             )
             .subscribe(this.formatResponse(), this.formatResponse());
     }
 
     back(): void {
         setTimeout(() => this.router.navigate(['/main']), this.results ? 500 : 0);
-        this.total = 0;
-        this.hasNext = false;
-        this.hasPrevious = false;
-        this.cursor = undefined;
+        this.isEmpty = true;
+        this.query = undefined;
     }
 
-    next(): void {
-        const spinnerName: string = 'navigate';
-        if (this.historics.hasNext) {
-            this.results = this.historics.next;
-            this.updateNavigation();
-        } else {
-            of('').pipe(
-                takeUntil(this.ngDestroy$),
-                debounceTime(500),
-                tap(() => this.searching = true),
-                tap(() => log('query starting...')),
-                switchMap(() => this.twitchSrv.searchChannel({ after: this.cursor, query: this.query })),
-                tap(() => log('query ended')),
-            )
-            .subscribe(this.formatResponse(), this.formatResponse());
-        }
-    }
-
-    previous(): void {
-        this.results = this.historics.previous;
-        this.updateNavigation();
+    add(): void {
+        
     }
 
     private formatResponse(): (response: TwitchResponse<Channel>) => void {
@@ -93,28 +75,20 @@ export class AdditionViewComponent extends AbstractComponent implements OnInit {
             }
             
             this.searching = false;
-            log('updateSearchState processed!');
+            log('searching updated!');
             this.cursor = !!response.pagination ? response.pagination.cursor : undefined;
             log('extract cursor processed!');
-            this.results = response.data.sort((a, b) => a.display_name < b.display_name ? -1 : a.display_name > b.display_name ? 1 : 0);
+            this.results.push(
+                ...response.data.sort((a, b) => a.display_name < b.display_name ? -1 : a.display_name > b.display_name ? 1 : 0)
+            );
             log('extract & sort datas processed!');
-            
-            this.historics.push(this.results);
-            log('historic assignation processed!');
-            this.total = this.historics.reduce((list, acc) => acc + list.length, 0);
-            log('total calcul processed!');
-            this.updateNavigation();
-            log('updateNavigation processed!');
+            this.isEmpty = this.results.length === 0;
+            log('isEmpty updated!');
 
             log('format ended');
             
             setTimeout(() => this.input.nativeElement.dispatchEvent(new Event('focus')), 100);
         };
-    }
-
-    private updateNavigation(): void {
-        this.hasNext = this.historics.hasNext;
-        this.hasPrevious = this.historics.hasPrevious;
     }
 
 }

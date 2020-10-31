@@ -18,6 +18,9 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            align-content: center;
+            width: 100%;
+            padding: 10px 0;
         }
 
         &_container {
@@ -28,18 +31,14 @@
             height: calc(100% - 57px - 46px);
             transition: height .5s;
 
-            > span {
-                align-self: center;
-            }
-
             &--opened {
                 height: 150%;
             }
         }
 
-        &_spinner {
-            justify-content: center;
-            align-content: center;
+        &_counter {
+            align-self: center;
+            padding: 10px 0;
         }
 
         &_results {
@@ -47,20 +46,16 @@
             flex-wrap: wrap;
             overflow: auto;
             flex: 1;
+            transition: opacity .5s;
 
             & > app-streamer {
                 width: 100%;
             }
 
             &--hidden {
+                opacity: 0;
                 display: none;
             }
-        }
-
-        &_navigation {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
         }
 
         &_back {
