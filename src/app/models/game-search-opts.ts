@@ -1,4 +1,4 @@
 export interface GameSearchOpts {
-    id?: string;
-    name?: string;
+    id?: string[];
+    name?: string[];
 }

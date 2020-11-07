@@ -1,26 +1,52 @@
 import { Component, OnInit } from '@angular/core';
+import { MatButton } from '@angular/material';
+import { delay } from 'rxjs/operators';
+import { AbstractComponent } from 'src/app/components/abstract.component';
+import { Channel } from 'src/app/models/channel';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
     templateUrl: './main-view.component.html',
     styleUrls: ['./main-view.component.scss'],
 })
-export class MainViewComponent implements OnInit {
+export class MainViewComponent extends AbstractComponent<MatButton> implements OnInit {
 
-    list: any[] = [];
+    synchronizing: boolean;
+    list: Channel[] = [];
+    deleting: { [key: number]: any } = {};
 
-    constructor() { }
+    
+    constructor(private storageSrv: StorageService) {
+        super();
+    }
 
-    ngOnInit() { 
-        this.list.push({
-            name: "mistermv",
-            status: true,
-            logo: "https://static-cdn.jtvnw.net/jtv_user_pictures/5c8624bb-58df-4152-bde9-158487049a5f-profile_image-70x70.png",
+    ngOnInit() {
+        this.synchronizing = true;
+
+        this.storageSrv.streamer$.subscribe(streamers => {
+            this.list = streamers;
+            this.synchronizing = false;
+            this.refresh();
         });
-        this.list.push({
-            name: "varrgas_live",
-            status: true,
-            logo: "https://static-cdn.jtvnw.net/jtv_user_pictures/5eca61fb-31b3-4815-9639-476f76ece579-profile_image-70x70.png",
+    }
+
+    delete(channel: Channel): void {
+        this.deleting[channel.id] = false;
+        this.refresh();
+
+        this.storageSrv.deleteStreamer(channel).pipe(delay(250)).subscribe(() => {
+            delete this.deleting[channel.id];
+            this.list.splice(this.list.findIndex(item => item.id === channel.id), 1);
+            this.refresh();
         });
+    }
+
+    isNotDeleting(id: number): boolean {
+        return !this.deleting.hasOwnProperty(id)
+    }
+
+    protected element(): HTMLElement {
+        return this.el._elementRef.nativeElement;
     }
 
 }

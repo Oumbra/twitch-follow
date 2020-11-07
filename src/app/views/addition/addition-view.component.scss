@@ -48,13 +48,13 @@
             flex: 1;
             transition: opacity .5s;
 
-            & > app-streamer {
-                width: 100%;
-            }
-
             &--hidden {
                 opacity: 0;
                 display: none;
+            }
+
+            & > app-streamer {
+                width: 100%;
             }
         }
 

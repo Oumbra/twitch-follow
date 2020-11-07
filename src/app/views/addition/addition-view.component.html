@@ -1,8 +1,8 @@
 <mat-form-field floatLabel="never" class="addition-view_input">
-    <input matInput placeholder="Recherche..." [(ngModel)]="query" (ngModelChange)="query$.next($event)" #input />
+    <input matInput placeholder="Recherche..." [(ngModel)]="query" (ngModelChange)="query$.next($event)" #refresh />
 </mat-form-field>
 
-<div class="addition-view_container" [ngClass]="{'addition-view_container--opened': !isEmpty}">
+<div class="addition-view_container" [ngClass]="{'addition-view_container--opened': !isEmpty && results.length > 2}">
     <span class="addition-view_spinner" *ngIf="searching && isEmpty; else title">
         <mat-spinner diameter="50"></mat-spinner>
     </span>
@@ -15,12 +15,15 @@
             [name]="result.display_name"
             [logo]="result.thumbnail_url"
             [status]="result.is_live">
-            <button mat-icon-button>
+            <button mat-icon-button *ngIf="isNotSelected(result.id)" (click)="add(result)">
                 <mat-icon>add_circle_outline</mat-icon>
             </button>
-            <button mat-icon-button *ngIf="false">
-                <mat-icon>check_circle_outline</mat-icon>
-            </button>
+            <div class="icon-container" *ngIf="isSelected(result.id)">
+                <mat-icon color="primary">check_circle_outline</mat-icon>
+            </div>
+            <div class="icon-container" *ngIf="isSelecting(result.id)">
+                <mat-spinner diameter="20"></mat-spinner>
+            </div>
         </app-streamer>
 
         <div class="addition-view_spinner" *ngIf="searching">

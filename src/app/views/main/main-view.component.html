@@ -1,16 +1,27 @@
-<div class="main-view_container">
-    <app-streamer 
-        *ngFor="let item of list"
-        [name]="item.name" 
-        [status]="item.status"
-        [logo]="item.logo">
-        <button mat-icon-button>
+<div class="main-view_container" [ngClass]="{'main-view_container--empty': list.length === 0}">
+    <span class="main-view_spinner" *ngIf="synchronizing && list.length === 0; else title">
+        <mat-spinner diameter="50"></mat-spinner>
+    </span>
+    <ng-template #title>
+        <span class="main-view_counter" *ngIf="list.length === 0">Aucun follow</span>
+    </ng-template>
+
+    <app-streamer *ngFor="let item of list"
+        [name]="item.display_name"
+        [logo]="item.thumbnail_url"
+        [status]="item.is_live">
+        <button mat-icon-button *ngIf="isNotDeleting(item.id); else spinner" (click)="delete(item)">
             <mat-icon>remove_circle_outline</mat-icon>
         </button>
+        <ng-template #spinner>
+            <div class="icon-container">
+                <mat-spinner diameter="20"></mat-spinner>
+            </div>
+        </ng-template>
     </app-streamer>
 </div>
 
-<button class="main-view_add" mat-flat-button routerLink="/addition">
+<button class="main-view_add" mat-flat-button routerLink="/addition" #refresh>
     <mat-icon>add</mat-icon>
     Ajouter
 </button>

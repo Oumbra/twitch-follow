@@ -11,10 +11,22 @@
     .main-view {
 
         &_container {
-            display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            height: calc(100% - 46px);
+            transition: height .5s;
+
+            &--empty {
+                display: flex;
+            }
         }
         
+        &_counter, &_spinner {
+            width: 100%;
+            display: flex;
+            align-self: center;
+            justify-content: center;
+        }
+
         &_add {
             margin: 5px;
         }

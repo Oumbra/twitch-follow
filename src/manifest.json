@@ -5,8 +5,7 @@
     "author": "Oumbra",
     "manifest_version": 2,
     "permissions": [
-        "activeTab",
-        "webNavigation",
+        "notifications",
         "storage"
     ],
     "background": {
