@@ -22,7 +22,6 @@
         }
 
         &_name {
-            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             text-transform: capitalize;
@@ -30,6 +29,11 @@
             font-size: 16px;
             max-width: 105px
         }
-
+ 
+        &_counter {
+            text-transform: initial;
+            font-size: 11px;
+            font-style: italic;
+        }
     }
 }

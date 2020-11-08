@@ -27,7 +27,11 @@ export function blur(el: HTMLElement): () => void {
     return () => el.dispatchEvent(new Event('blur'));
 }
 
-export const standardCatchError = (e) => {
+export function stringSort<T>(attr: string): (a: T, b: T) => number {
+    return (a, b) => a[attr] < b[attr] ? -1 : a[attr] > b[attr] ? 1 : 0;
+}
+
+export const standardCatchError = (e: any) => {
     log("error", e);
     return throwError(e);
 }

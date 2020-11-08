@@ -1,4 +1,4 @@
-<div class="main-view_container" [ngClass]="{'main-view_container--empty': list.length === 0}">
+<div class="main-view_container" [ngClass]="{'main-view_container--flex': synchronizing || list.length === 0}">
     <span class="main-view_spinner" *ngIf="synchronizing && list.length === 0; else title">
         <mat-spinner diameter="50"></mat-spinner>
     </span>
@@ -7,10 +7,11 @@
     </ng-template>
 
     <app-streamer *ngFor="let item of list"
-        [name]="item.display_name"
+        [name]="item.name"
         [logo]="item.thumbnail_url"
-        [status]="item.is_live">
-        <button mat-icon-button *ngIf="isNotDeleting(item.id); else spinner" (click)="delete(item)">
+        [status]="item.is_live"
+        [count]="item.viewer_count">
+        <button mat-icon-button *ngIf="isNotDeleting(item.id); else spinner" (click)="delete(item.id)">
             <mat-icon>remove_circle_outline</mat-icon>
         </button>
         <ng-template #spinner>

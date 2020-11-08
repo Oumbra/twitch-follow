@@ -2,7 +2,8 @@
 </app-async-image>
 
 <div class="app-streamer_name" [title]="title" #nameElement>
-    {{name}}
+    <span>{{name}}</span>
+    <div class="app-streamer_counter" *ngIf="!!count">{{count}} viewers</div>
 </div>
 
 <ng-content></ng-content>

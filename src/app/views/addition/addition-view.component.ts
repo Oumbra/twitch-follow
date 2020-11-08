@@ -1,11 +1,11 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { blur, log } from 'src/app/app.utils';
 import { AbstractComponent } from 'src/app/components/abstract.component';
-import { Channel } from 'src/app/models/channel';
-import { TwitchResponse, TwitchResponseSkeleton } from 'src/app/models/twitch-response';
+import { Channel } from 'src/app/models/response/channel';
+import { TwitchResponse, TwitchResponseSkeleton } from 'src/app/models/response/twitch-response';
 import { StorageService } from 'src/app/services/storage.service';
 import { TwitchService } from 'src/app/services/twitch.service';
 
@@ -32,9 +32,12 @@ export class AdditionViewComponent extends AbstractComponent<ElementRef> impleme
 
     ngOnInit() {
         // repertorie les streamers déjà suivi
-        this.storageSrv.streamer$.subscribe(streamers => {
-            streamers.forEach(s => this.selected[s.id] = true);
-        });
+        this.storageSrv.storage$.pipe(
+            map(storage => storage.streamers),
+            map(streamers => streamers.map(s => parseInt(s.id))),
+        ).subscribe(ids => 
+            ids.forEach(id => this.selected[id] = true)
+        );
 
         this.query$.pipe(
                 takeUntil(this.destroy$),

@@ -14,6 +14,7 @@ export class StreamerComponent implements AfterViewInit {
   @Input() logo: string;
   @Input() name: string;
   @Input() status: boolean;
+  @Input() count?: number = 0;
 
   title: string = '';
 

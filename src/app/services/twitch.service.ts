@@ -4,13 +4,13 @@ import { Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { CLIENT_ID } from '../app.constantes';
 import { standardCatchError } from '../app.utils';
-import { Channel } from '../models/channel';
-import { ChannelSearchOpts } from '../models/channel-search-opts';
-import { Game } from '../models/game';
-import { Stream } from '../models/stream';
-import { GameSearchOpts } from '../models/game-search-opts';
-import { StreamSearchOpts } from '../models/stream-search-opts';
-import { TwitchResponse } from '../models/twitch-response';
+import { ChannelSearchOpts } from '../models/parameter/channel-search-opts';
+import { GameSearchOpts } from '../models/parameter/game-search-opts';
+import { Channel } from '../models/response/channel';
+import { Game } from '../models/response/game';
+import { Stream } from '../models/response/stream';
+import { TwitchResponse } from '../models/response/twitch-response';
+import { StreamSearchOpts } from '../models/parameter/stream-search-opts';
 import { TokenService } from './token.service';
 
 @Injectable({
