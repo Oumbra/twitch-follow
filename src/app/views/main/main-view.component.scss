@@ -2,7 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: space-between;
-    min-height: 100%;
+    height: 100%;
 
     & > * {
         width: 100%;
@@ -11,24 +11,50 @@
     .main-view {
 
         &_container {
+            display: flex;
             flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: center;
             height: calc(100% - 46px);
             transition: height .5s;
 
-            &--flex {
-                display: flex;
+            &--opened {
+                height: 150%;
             }
         }
         
-        &_counter, &_spinner {
-            width: 100%;
+        &_spinner {
             display: flex;
-            align-self: center;
+            flex-wrap: wrap;
             justify-content: center;
+            align-content: center;
+        }
+
+        &_counter {
+            align-self: center;
+            padding: 10px 0;
+        }
+
+        &_results {
+            display: flex;
+            flex-wrap: wrap;
+            overflow: auto;
+            flex: 1;
+            transition: opacity .5s;
+
+            &--hidden {
+                opacity: 0;
+                display: none;
+            }
+
+            & > app-streamer {
+                width: 100%;
+                cursor: pointer;
+            }
         }
 
         &_add {
-            margin: 5px;
+            margin: 5px 0;
         }
     }
 }

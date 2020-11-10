@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { APP_NAME } from '../app.constantes';
 import { obj } from '../app.utils';
@@ -48,8 +48,9 @@ export class StorageService {
                 const streamer = streamers.find(streamer => streamer.id === s.id);
                 return {
                     ...s,
-                    is_live: !!streamer,
+                    is_live: streamer && streamer.is_live,
                     title: streamer && streamer.title,
+                    game_id: streamer && streamer.game_id,
                     started_at: streamer && streamer.started_at,
                     viewer_count: streamer && streamer.viewer_count,
                 };

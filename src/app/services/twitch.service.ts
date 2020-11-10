@@ -20,7 +20,7 @@ export class TwitchService {
     
     private STREAM_URL: string = 'https://api.twitch.tv/helix/streams';
     private CHANNEL_URL: string = 'https://api.twitch.tv/helix/search/channels';
-    private GAME_URL: string = 'https://api.twitch.tv/helix/search/games';
+    private GAME_URL: string = 'https://api.twitch.tv/helix/games';
 
     constructor(private httpClient: HttpClient,
                 private tokenSrv: TokenService) {

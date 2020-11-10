@@ -10,8 +10,9 @@ export interface Streamer {
     name: string;
     thumbnail_url: string;
     language: string;
-    title: string;
     is_live: boolean;
+    title?: string;
+    game_id?: number;
     started_at?: Date;
     viewer_count?: number;
 }
@@ -42,6 +43,7 @@ export function convert(input: StreamConvert): Streamer {
             title: stream.title,
             started_at: stream.started_at,
             viewer_count: stream.viewer_count,
+            game_id: stream.game_id,
             is_live: true,
         };
     }

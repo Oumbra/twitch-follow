@@ -6,7 +6,12 @@
 
     .app-streamer {
 
+        &_container {
+            position: relative;
+        }
+
         &_logo {
+            display: flex;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -20,20 +25,39 @@
                 border-color: red;
             }
         }
+        
+        &_badge {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            padding: 2px 3px;
+            background-color: #303030;
+            color: #fff;
+            font-size: 12px;
+        }
 
-        &_name {
+        &_text-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        &_text {
             overflow: hidden;
             text-overflow: ellipsis;
             text-transform: capitalize;
             font-weight: bold;
-            font-size: 16px;
             max-width: 105px
         }
- 
-        &_counter {
-            text-transform: initial;
-            font-size: 11px;
-            font-style: italic;
+        
+        &_name {
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        &_activity {
+            font-size: 12px;
+            font-weight: normal;
+            color: #303030;
         }
     }
 }

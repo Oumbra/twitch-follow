@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material';
 import { interval } from 'rxjs';
 import { delay, switchMap, tap } from 'rxjs/operators';
@@ -17,16 +17,16 @@ export class MainViewComponent extends AbstractComponent<MatButton> implements O
     synchronizing: boolean = true;
     list: Streamer[] = [];
     deleting: { [key: number]: any } = {};
-    
+    isEmpty: boolean = true;
+
     constructor(private storageSrv: StorageService) {
         super();
     }
 
     ngOnInit() {
-        this.synchronizing = true;
-
         this.storageSrv.streamer$.subscribe(streamers => {
             this.list = streamers.sort(stringSort('name'));
+            this.isEmpty = this.list.length === 0;
             this.synchronizing = false;
             this.refresh();
         });
@@ -40,9 +40,14 @@ export class MainViewComponent extends AbstractComponent<MatButton> implements O
                     item.is_live = streamer.is_live;
                     item.viewer_count = streamer.viewer_count;
                     item.started_at = streamer.started_at;
+                    item.game_id = streamer.game_id;
                 });
                 this.refresh();
             });
+    }
+
+    open(name: string): void {
+        window.open(`https://www.twitch.tv/${name}`, '_blank');
     }
 
     delete(id: number): void {

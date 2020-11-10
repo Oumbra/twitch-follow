@@ -1,9 +1,16 @@
-<app-async-image [src]="logo" class="app-streamer_logo" [ngClass]="{'app-streamer_logo--enable': status, 'app-streamer_logo--disable': !status}">
-</app-async-image>
+<span class="app-streamer_container">
+    <app-async-image [src]="logo" class="app-streamer_logo" [ngClass]="{'app-streamer_logo--enable': status, 'app-streamer_logo--disable': !status}">
+    </app-async-image>
+    <div class="app-streamer_badge" *ngIf="!!badge">{{badge}}</div>
+</span>
 
-<div class="app-streamer_name" [title]="title" #nameElement>
-    <span>{{name}}</span>
-    <div class="app-streamer_counter" *ngIf="!!count">{{count}} viewers</div>
+<div class="app-streamer_text-container">
+    <div class="app-streamer_text app-streamer_name" [title]="tooltip" #nameElement>
+        <span>{{name}}</span>
+    </div>
+    <div class="app-streamer_text app-streamer_activity" *ngIf="!!activity">
+        <span>{{activity}}</span>
+    </div>
 </div>
 
 <ng-content></ng-content>

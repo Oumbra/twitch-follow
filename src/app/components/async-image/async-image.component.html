@@ -1,7 +1,5 @@
 <div class="async-image">
-    <img [src]="safeUrl" alt="image chargée"
-        [ngClass]="{'async-image--loaded': status === ELoadState.SUCCESSED}"
-        #asyncImage />
+    <img [src]="safeUrl" alt="image chargée" [ngClass]="{'async-image--loaded': status === ELoadState.SUCCESSED}" #asyncImage />
     
     <mat-icon class="async-image_default" *ngIf="status === ELoadState.FAILED">
         broken_image
