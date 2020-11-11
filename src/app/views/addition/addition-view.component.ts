@@ -110,7 +110,7 @@ export class AdditionViewComponent extends AbstractComponent<ElementRef> impleme
             log('isEmpty updated!');
 
             log('format ended');
-            this.refresh();
+            this.refreshView();
         };
     }
 

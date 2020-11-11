@@ -15,8 +15,7 @@ $default-theme: mat-light-theme($default-app-primary, $default-app-accent, $defa
 
 /* You can add global styles to this file, and also import other style files */
 html, body {
-    // height: 100%;
-    width: 240px;
+    width: 290px;
     height: 300px;
 }
 body {
@@ -32,4 +31,18 @@ body {
     align-content: center;
     width: 40px;
     height: 40px;
+}
+
+.mat-menu-panel {
+    min-height: auto;
+}
+
+.mat-menu-content {
+    padding: 4px 0;
+}
+
+.mat-menu-item {
+    padding: 0 10px 0 5px;
+    height: 30px;
+    line-height: 30px;
 }

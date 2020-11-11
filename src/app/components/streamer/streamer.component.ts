@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { measureText } from 'src/app/app.utils';
-import { Streamer } from 'src/app/models/storage';
 import { TwitchService } from 'src/app/services/twitch.service';
 
 @Component({
@@ -19,6 +19,7 @@ export class StreamerComponent implements AfterViewInit, OnChanges {
   @Input() status: boolean;
   @Input() game_id?: number;
   @Input() viewer_count?: number;
+  @Output() refresh: Subject<void> = new Subject();
 
   tooltip: string = '';
   badge: string;
@@ -35,13 +36,17 @@ export class StreamerComponent implements AfterViewInit, OnChanges {
     if (changes.game_id && !!changes.game_id.currentValue) {
       this.twitchSrv.searchGame({ id: [`${this.game_id}`] })
         .pipe(map(response => response.data.shift()))
-        .subscribe(game => this.activity = game.name);
-    }
-
-    if (changes.viewer_count && !!changes.viewer_count.currentValue) {
-      this.badge = this.humanViewerSize(this.viewer_count);
-    }
-  }  
+        .subscribe(game => {
+          this.activity = game.name;
+          this.refresh.next();
+        });
+      }
+      
+      if (changes.viewer_count && !!changes.viewer_count.currentValue) {
+        this.badge = this.humanViewerSize(this.viewer_count);
+        this.refresh.next();
+      }
+    }  
 
   ngAfterViewInit() {
     const pixelWidth = measureText(this.el.textContent, '15px Roboto');

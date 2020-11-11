@@ -13,7 +13,7 @@ export abstract class AbstractComponent<T> implements OnDestroy {
         this.destroy.next();
     }
     
-    refresh(): void {
+    refreshView(): void {
         waitUntil(blur(this.element()), () => !!this.element(), 250);
     }
 

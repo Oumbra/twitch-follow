@@ -8,7 +8,7 @@
     <div class="app-streamer_text app-streamer_name" [title]="tooltip" #nameElement>
         <span>{{name}}</span>
     </div>
-    <div class="app-streamer_text app-streamer_activity" *ngIf="!!activity">
+    <div class="app-streamer_text app-streamer_activity" [title]="activity" *ngIf="!!game_id">
         <span>{{activity}}</span>
     </div>
 </div>
