@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { CLIENT_ID } from '../app.constantes';
+import { CHANNEL_URL, CLIENT_ID, GAME_URL, STREAM_URL } from '../app.constantes';
 import { standardCatchError } from '../app.utils';
 import { ChannelSearchOpts } from '../models/parameter/channel-search-opts';
 import { GameSearchOpts } from '../models/parameter/game-search-opts';
@@ -17,10 +17,6 @@ import { TokenService } from './token.service';
     providedIn: 'root',
 })
 export class TwitchService {
-    
-    private STREAM_URL: string = 'https://api.twitch.tv/helix/streams';
-    private CHANNEL_URL: string = 'https://api.twitch.tv/helix/search/channels';
-    private GAME_URL: string = 'https://api.twitch.tv/helix/games';
 
     constructor(private httpClient: HttpClient,
                 private tokenSrv: TokenService) {
@@ -29,7 +25,7 @@ export class TwitchService {
     searchChannel(query: ChannelSearchOpts): Observable<TwitchResponse<Channel>> {
         return this.tokenSrv.getToken()
             .pipe(
-                switchMap(token => this.httpClient.get(this.CHANNEL_URL, this.opts(token, query))),
+                switchMap(token => this.httpClient.get(CHANNEL_URL, this.opts(token, query))),
                 map((datas: any) => this.convert<Channel>(datas)),
                 catchError(standardCatchError)
             );
@@ -37,7 +33,7 @@ export class TwitchService {
 
     searchStream(query: StreamSearchOpts): Observable<TwitchResponse<Stream>> {
         return this.tokenSrv.getToken().pipe(
-            switchMap(token => this.httpClient.get(this.STREAM_URL, this.opts(token, query))),
+            switchMap(token => this.httpClient.get(STREAM_URL, this.opts(token, query))),
             map((datas: any) => this.convert<Stream>(datas)),
             catchError(standardCatchError)
         );
@@ -45,7 +41,7 @@ export class TwitchService {
 
     searchGame(query: GameSearchOpts): Observable<TwitchResponse<Game>> {
         return this.tokenSrv.getToken().pipe(
-            switchMap(token => this.httpClient.get(this.GAME_URL, this.opts(token, query))),
+            switchMap(token => this.httpClient.get(GAME_URL, this.opts(token, query))),
             map((datas: any) => this.convert<Game>(datas)),
             catchError(standardCatchError)
         );

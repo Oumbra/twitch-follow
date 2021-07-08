@@ -1,4 +1,3 @@
-import { log } from '../app.utils';
 
 export class LinkedList<T> {
     
