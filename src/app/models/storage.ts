@@ -5,6 +5,20 @@ export interface Storage {
     streamers: Streamer[];
 }
 
+export class StorageSchema implements Storage {
+    static readonly SKELETON = new StorageSchema();
+    static readonly PROPS = Object.keys(StorageSchema.SKELETON);
+
+    streamers: Streamer[] = [];
+
+    public static isValidSchema(obj: any): boolean {
+        return this.PROPS.filter(property => property in obj).length === this.PROPS.length
+            && (obj as StorageSchema)
+                .streamers
+                .reduce((acc, item) => acc && StreamerSchema.isValidSchema(item), true);
+    }
+}
+
 export interface Streamer {
     id: string;
     name: string;
@@ -15,6 +29,21 @@ export interface Streamer {
     game_id?: number;
     started_at?: Date;
     viewer_count?: number;
+}
+
+export class StreamerSchema implements Streamer {
+    static readonly SKELETON = new StreamerSchema();
+    static readonly PROPS = Object.keys(StreamerSchema.SKELETON);
+
+    id: string = null;
+    name: string = null;
+    thumbnail_url: string = null;
+    language: string = null;
+    is_live: boolean = null;
+
+    public static isValidSchema(obj: any): boolean {
+        return this.PROPS.filter(property => property in obj).length === this.PROPS.length;
+    }
 }
 
 export type StreamConvert = Stream | Channel;

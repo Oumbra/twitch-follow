@@ -10,32 +10,24 @@ import { StorageService } from 'src/app/services/storage.service';
 @Component({
     templateUrl: './main-view.component.html',
     styleUrls: ['./main-view.component.scss'],
-    
+
 })
 export class MainViewComponent extends AbstractElementComponent<MatButton> implements OnInit {
 
-    list: Streamer[] = [];
-    synchronizing: boolean = true;
-    isEmpty: boolean = true;
-    isOpen: boolean = false;
+    list: Streamer[];
+    synchronizing: boolean;
+    isEmpty: boolean;
+    isOpen: boolean;
 
     private deleting: { [key: number]: any } = {};
 
     constructor(private router: Router,
-                private storageSrv: StorageService) {
+        private storageSrv: StorageService) {
         super();
     }
 
     ngOnInit() {
-        this.storageSrv.streamer$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(streamers => {
-                this.list = streamers.sort(this.sortStreamer());
-                this.isEmpty = this.list.length === 0;
-                this.isOpen = this.list.length > 3;
-                this.synchronizing = false;
-                this.refreshView();
-            });
+        this.load();
 
         interval(5000)
             .pipe(
@@ -43,8 +35,27 @@ export class MainViewComponent extends AbstractElementComponent<MatButton> imple
                 switchMap(() => this.storageSrv.streamer$)
             )
             .subscribe(streamers => {
-                this.list.sort(this.sortStreamer())
-                    .map(this.updateItem(streamers));
+                const simplify = (l) => l.name;
+                this.list = this.list
+                    .map(this.updateItem(streamers))
+                    .sort(this.sortStreamer());
+                this.refreshView();
+            });
+    }
+
+    load(): void {
+        this.list = [];
+        this.synchronizing = true;
+        this.isEmpty = true;
+        this.isOpen = false;
+
+        this.storageSrv.streamer$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(streamers => {
+                this.list = streamers.sort(this.sortStreamer());
+                this.isEmpty = this.list.length === 0;
+                this.isOpen = this.list.length > 3;
+                this.synchronizing = false;
                 this.refreshView();
             });
     }
@@ -70,7 +81,7 @@ export class MainViewComponent extends AbstractElementComponent<MatButton> imple
     }
 
     toAdd(): void {
-        setTimeout(() => this.router.navigate(['/addition']), this.isOpen ? 500: 0);
+        setTimeout(() => this.router.navigate(['/addition']), this.isOpen ? 500 : 0);
         this.isOpen = false;
     }
 

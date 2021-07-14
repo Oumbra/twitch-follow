@@ -1,50 +1,136 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
+import { Component, NgZone, OnInit } from '@angular/core';
+import { MatButton } from '@angular/material';
+import { Router, RouterOutlet } from '@angular/router';
+import { Observable } from 'rxjs';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { slideInAnimation } from './animations/slide.animation';
-import { AbstractComponent } from './components/abstract.component';
+import { AbstractElementComponent } from './components/abstract-element.component';
+import { StorageSchema } from './models/storage';
 import { StorageService } from './services/storage.service';
+import { ToastService } from './services/toast.service';
+import { MainViewComponent } from './views/main/main-view.component';
 
 @Component({
-    selector    : 'app-root',
-    templateUrl : './app.component.html',
-    styleUrls   : ['./app.component.scss'],
-    animations  : [slideInAnimation],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    animations: [slideInAnimation],
 })
-export class AppComponent extends AbstractComponent {
+export class AppComponent extends AbstractElementComponent<MatButton> implements OnInit {
 
-    private readonly setting = {
-      element: null as HTMLElement
+    private readonly APPLICATION_JSON = 'application/json';
+    private readonly elements = {
+        downloadLink: null as HTMLElement,
+        uploadInput: null as HTMLInputElement,
     }
 
-    constructor(private storageSrv: StorageService) {
+    private viewComponent: AbstractElementComponent<any>;
+
+    constructor(private router: Router,
+                private zone: NgZone,
+                private toastSrv: ToastService,
+                private storageSrv: StorageService) {
         super();
+    }
+
+    ngOnInit() {
+        this.elements.downloadLink = document.createElement('a');
+        this.elements.uploadInput = document.createElement('input');
+        this.elements.uploadInput.type = 'file';
+        this.elements.uploadInput.accept = this.APPLICATION_JSON;
+        this.elements.uploadInput.onchange = file => this.readFile(file);
     }
 
     prepareRoute(outlet: RouterOutlet) {
         return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
     }
 
-    import() {
-        console.log('import');
+    activateRoute(e: any) {
+        this.viewComponent = e;
     }
 
-    export() {
-        this.storageSrv.storage$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(
-                datas => {
-                    if (!this.setting.element) {
-                        this.setting.element = document.createElement('a');
-                    }
-                    const blob = new Blob([JSON.stringify(datas, null, 2)], {type: 'application/json'});
-                    const element: HTMLElement = this.setting.element;
-                    element.setAttribute('href', window.URL.createObjectURL(blob));
-                    element.setAttribute('download', `twitch-follow_${new Date().toISOString()}.backup.json`);
-                    element.dispatchEvent(new MouseEvent('click'));
-                },
-                err => console.log('error', err)
-            )
+    import(): void {
+        this.elements.uploadInput.dispatchEvent(new MouseEvent('click'));
     }
-    
+
+    export(): void {
+        this.storageSrv.storage$
+            .pipe(
+                takeUntil(this.destroy$),
+                map(datas => new Blob([JSON.stringify(datas, null, 2)], { type: this.APPLICATION_JSON })),
+                map(blob => window.URL.createObjectURL(blob))
+            )
+            .subscribe(
+                url => {
+                    const el: HTMLElement = this.elements.downloadLink;
+                    el.setAttribute('href', url);
+                    el.setAttribute('download', `twitch-follow_${new Date().toISOString()}.backup.json`);
+                    el.dispatchEvent(new MouseEvent('click'));
+                },
+                err => this.toastSrv.error(err)
+            );
+    }
+
+    protected element(): HTMLElement {
+        return this.el._elementRef.nativeElement;
+    }
+
+    private readFile(event: any): void {
+        const file: File = event.target.files[0];
+        if (this.APPLICATION_JSON === file.type) {
+            this.readAsText(file)
+                .pipe(
+                    map(content => JSON.parse(content)),
+                    filter(json => this.isValidJSON(json)),
+                    switchMap(json => this.storageSrv.combineStorage(json)),
+                    tap(count => {
+                        if (count === 0) {
+                            this.toastSrv.warn('No new streamer detected');
+                            this.refreshView();
+                        }
+                    }),
+                    filter(count => count > 0)
+                )
+                .subscribe(
+                    count => {
+                        // si on est sur la page d'accueil
+                        if (this.viewComponent instanceof MainViewComponent) {
+                            (this.viewComponent as MainViewComponent).load();
+                        }
+                        // sinon on lance la navigation vers la page d'accueil
+                        else {
+                            this.zone.run(() => this.router.navigate(['/main']));
+                        }
+                        // tricks refresh
+                        this.refreshView();
+                        this.toastSrv.success(`${count} streamer(s) added`);
+                    },
+                    error => this.toastSrv.error(error),
+                );
+        } else {
+            this.toastSrv.error('File is not a JSON !');
+        }
+        // reset de l'input file
+        this.elements.uploadInput.value = null;
+    }
+
+    private isValidJSON(json: any): boolean {
+        if (StorageSchema.isValidSchema(json)) {
+            return true;
+        }
+        throw ('JSON not conform');
+    }
+
+    private readAsText(file: Blob): Observable<string> {
+        return new Observable(observer => {
+            const fileReader: FileReader = new FileReader();
+            fileReader.readAsText(file, "UTF-8");
+            fileReader.onload = () => {
+                observer.next(fileReader.result as string);
+                observer.complete();
+            }
+            fileReader.onerror = error => observer.error(error);
+        })
+    }
+
 }
