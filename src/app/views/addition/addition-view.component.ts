@@ -1,9 +1,9 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, delay, distinctUntilChanged, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { blur, log } from 'src/app/app.utils';
-import { AbstractComponent } from 'src/app/components/abstract.component';
+import { AbstractElementComponent } from 'src/app/components/abstract-element.component';
 import { Channel } from 'src/app/models/response/channel';
 import { TwitchResponse, TwitchResponseSkeleton } from 'src/app/models/response/twitch-response';
 import { StorageService } from 'src/app/services/storage.service';
@@ -13,7 +13,7 @@ import { TwitchService } from 'src/app/services/twitch.service';
     templateUrl : './addition-view.component.html',
     styleUrls   : ['./addition-view.component.scss'],
 })
-export class AdditionViewComponent extends AbstractComponent<ElementRef> implements OnInit {
+export class AdditionViewComponent extends AbstractElementComponent<ElementRef> implements OnInit {
 
     cursor: string;
     query: string;
@@ -33,11 +33,11 @@ export class AdditionViewComponent extends AbstractComponent<ElementRef> impleme
     ngOnInit() {
         // repertorie les streamers déjà suivi
         this.storageSrv.storage$.pipe(
-            map(storage => storage.streamers),
-            map(streamers => streamers.map(s => parseInt(s.id))),
-        ).subscribe(ids => 
-            ids.forEach(id => this.selected[id] = true)
-        );
+                takeUntil(this.destroy$),
+                map(storage => storage.streamers),
+                map(streamers => streamers.map(s => parseInt(s.id))),
+            )
+            .subscribe(ids => ids.forEach(id => this.selected[id] = true));
 
         this.query$.pipe(
                 takeUntil(this.destroy$),

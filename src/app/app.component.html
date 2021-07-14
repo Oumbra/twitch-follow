@@ -11,9 +11,12 @@
 </div>
 
 <mat-menu #colors="matMenu">
-    <mat-grid-list cols="2" rowHeight="2:1">
-        <mat-grid-tile>1</mat-grid-tile>
-        <mat-grid-tile>2</mat-grid-tile>
-        <mat-grid-tile>3</mat-grid-tile>
-    </mat-grid-list>
+    <button mat-menu-item (click)="import()">
+        <mat-icon>file_upload</mat-icon>
+        Importer
+    </button>
+    <button mat-menu-item (click)="export()">
+        <mat-icon>file_download</mat-icon>
+        Exporter
+    </button>
 </mat-menu>

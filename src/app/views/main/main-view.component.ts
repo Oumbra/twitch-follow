@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material';
 import { Router } from '@angular/router';
 import { interval } from 'rxjs';
-import { delay, switchMap } from 'rxjs/operators';
-import { AbstractComponent } from 'src/app/components/abstract.component';
+import { delay, switchMap, takeUntil } from 'rxjs/operators';
+import { AbstractElementComponent } from 'src/app/components/abstract-element.component';
 import { Streamer } from 'src/app/models/storage';
 import { StorageService } from 'src/app/services/storage.service';
 
@@ -12,7 +12,7 @@ import { StorageService } from 'src/app/services/storage.service';
     styleUrls: ['./main-view.component.scss'],
     
 })
-export class MainViewComponent extends AbstractComponent<MatButton> implements OnInit {
+export class MainViewComponent extends AbstractElementComponent<MatButton> implements OnInit {
 
     list: Streamer[] = [];
     synchronizing: boolean = true;
@@ -27,16 +27,21 @@ export class MainViewComponent extends AbstractComponent<MatButton> implements O
     }
 
     ngOnInit() {
-        this.storageSrv.streamer$.subscribe(streamers => {
-            this.list = streamers.sort(this.sortStreamer());
-            this.isEmpty = this.list.length === 0;
-            this.isOpen = this.list.length > 3;
-            this.synchronizing = false;
-            this.refreshView();
-        });
+        this.storageSrv.streamer$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(streamers => {
+                this.list = streamers.sort(this.sortStreamer());
+                this.isEmpty = this.list.length === 0;
+                this.isOpen = this.list.length > 3;
+                this.synchronizing = false;
+                this.refreshView();
+            });
 
         interval(5000)
-            .pipe(switchMap(() => this.storageSrv.streamer$))
+            .pipe(
+                takeUntil(this.destroy$),
+                switchMap(() => this.storageSrv.streamer$)
+            )
             .subscribe(streamers => {
                 this.list.sort(this.sortStreamer())
                     .map(this.updateItem(streamers));
@@ -53,7 +58,10 @@ export class MainViewComponent extends AbstractComponent<MatButton> implements O
         this.refreshView();
 
         this.storageSrv.deleteStreamer(id)
-            .pipe(delay(250))
+            .pipe(
+                takeUntil(this.destroy$),
+                delay(250)
+            )
             .subscribe(() => {
                 delete this.deleting[id];
                 this.list.splice(this.list.findIndex(item => item.id === `${id}`), 1);

@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ELoadState } from 'src/app/enums/load-state';
+import { AbstractComponent } from '../abstract.component';
 
 @Component({
     selector: 'app-async-image',
@@ -8,7 +9,7 @@ import { ELoadState } from 'src/app/enums/load-state';
     styleUrls  : ['./async-image.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
-export class AsyncImageComponent implements OnChanges, AfterViewInit, EventListenerObject {
+export class AsyncImageComponent extends AbstractComponent  implements OnChanges, AfterViewInit, EventListenerObject {
 
     readonly ELoadState = ELoadState;
 
@@ -25,6 +26,7 @@ export class AsyncImageComponent implements OnChanges, AfterViewInit, EventListe
     private timer: NodeJS.Timer;
 
     constructor(private domSanitizer: DomSanitizer) {
+        super();
     }
 
     ngOnChanges(changes: SimpleChanges) {

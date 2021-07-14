@@ -1,15 +1,16 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { pipe, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { measureText } from 'src/app/app.utils';
 import { TwitchService } from 'src/app/services/twitch.service';
+import { AbstractComponent } from '../abstract.component';
 
 @Component({
   selector    : 'app-streamer',
   templateUrl : './streamer.component.html',
   styleUrls   : ['./streamer.component.scss'],
 })
-export class StreamerComponent implements AfterViewInit, OnChanges {
+export class StreamerComponent extends AbstractComponent implements AfterViewInit, OnChanges {
 
   @ViewChild('nameElement', { static: true })
   element: ElementRef<HTMLElement>;
@@ -26,6 +27,7 @@ export class StreamerComponent implements AfterViewInit, OnChanges {
   activity: string;
 
   constructor(private twitchSrv: TwitchService) {
+    super();
   }
 
   get el() {
@@ -35,7 +37,10 @@ export class StreamerComponent implements AfterViewInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.game_id && !!changes.game_id.currentValue) {
       this.twitchSrv.searchGame({ id: [`${this.game_id}`] })
-        .pipe(map(response => response.data.shift()))
+        .pipe(
+          takeUntil(this.destroy$),
+          map(response => response.data.shift())
+        )
         .subscribe(game => {
           this.activity = game.name;
           this.refresh.next();
@@ -55,11 +60,11 @@ export class StreamerComponent implements AfterViewInit, OnChanges {
     }
   }
   
-  humanViewerSize(count, dp=1): string {
+  private humanViewerSize(count: number, dp=1): string {
     const thresh = 1000;
   
     if (Math.abs(count) < thresh) {
-      return count;
+      return `${count}`;
     }
   
     const units = ['k', 'M'];
