@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { iif, Observable, of } from 'rxjs';
+import { filter, map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { APP_NAME } from '../app.constantes';
 import { obj } from '../app.utils';
 import { Channel } from '../models/response/channel';
@@ -30,6 +30,36 @@ export class StorageService {
         return this.storage$.pipe(
             tap(storage => storage.streamers.splice(storage.streamers.findIndex(i => i.id === `${streamerId}`), 1)),
             switchMap(storage => this.setStorage(storage))
+        );
+    }
+
+    combineStorage(storage: Storage): Observable<number> {
+        const counter = { value: 0 };
+        // enregistre le nouvel état
+        const storageSetter$ = _storage => of(_storage).pipe(switchMap(st => this.setStorage(st)));
+
+        return this.storage$.pipe(
+            map(st => {
+                // récupération des id des élements déjà référencés
+                const streamerIds = st.streamers.map(s => s.id);
+                // dédoublonnage des élements
+                return {
+                    storage: st,
+                    distinct: storage.streamers.filter(s => !streamerIds.includes(s.id))
+                };
+            }),
+            // stop le traitement si aucun novuel élement n'est trouvé
+            // filter(tuple => tuple.distinct.length > 0),
+            tap(tuple => {
+                // ajout des élements non référencés
+                tuple.storage.streamers.push(
+                    ...tuple.distinct,
+                );
+                // mise à jour du nombre d'element ajouté
+                counter.value = tuple.distinct.length;
+            }),
+            switchMap(tuple => tuple.distinct.length > 0 ? storageSetter$(tuple.storage) : of({})),
+            map(() => counter.value)
         );
     }
 
@@ -75,4 +105,5 @@ export class StorageService {
             });
         });
     }
+
 }

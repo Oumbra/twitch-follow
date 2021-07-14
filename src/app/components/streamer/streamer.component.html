@@ -1,7 +1,7 @@
 <span class="app-streamer_container">
     <app-async-image [src]="logo" class="app-streamer_logo" [ngClass]="{'app-streamer_logo--enable': status, 'app-streamer_logo--disable': !status}">
     </app-async-image>
-    <div class="app-streamer_badge" *ngIf="!!badge">{{badge}}</div>
+    <div class="app-streamer_badge" *ngIf="!!badge && status">{{badge}}</div>
 </span>
 
 <div class="app-streamer_text-container">

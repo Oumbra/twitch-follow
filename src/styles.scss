@@ -46,3 +46,27 @@ body {
     height: 30px;
     line-height: 30px;
 }
+
+.mat-snack-bar-container {
+    background: white;
+    color: #333;
+    border-radius: 0!important;
+    margin-top: 60px!important;
+
+    &--info {
+        border-left: 7px solid rgb(31, 31, 143);
+    }
+
+    &--warn {
+        border-left: 7px solid rgb(194, 194, 44);
+    }
+
+    &--success {
+        border-left: 7px solid rgb(20, 99, 20);
+    }
+
+    &--error {
+        border-left: 7px solid #b51f1f;
+    }
+
+}
