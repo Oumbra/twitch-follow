@@ -1,25 +1,34 @@
 import { log } from "./app/app.utils";
 
+
 chrome.runtime.onInstalled.addListener((arg) => {
     log(`installed !`, arg);
+});
 
-    // chrome.webNavigation.onCompleted.addListener((details) => {
-    //     console.log(details);
-    //     chrome.tabs.query({ active: true, currentWindow: true }, ([{ id }]) => {
-    //         chrome.pageAction.show(id);
-    //     });
-    // });
-    // chrome.pageAction.onClicked.addListener(tab => {
-    //     log(`onClicked !`, tab);
-    //     chrome.pageAction.show(tab.id);
-    // });
+chrome.runtime.onUpdateAvailable.addListener(() => {
+    log(`update available !`);
+});
 
-    // chrome.browserAction.onClicked.addListener(tab => {
-    //     log(`onClicked !`, tab);
-    //     chrome.pageAction.show(tab.id);
-    // });
+chrome.runtime.onRestartRequired.addListener(() => {
+    log(`restart required !`);
 });
 
 chrome.runtime.onStartup.addListener(() => {
-    log(`startup !`);
+    log(`started !`);
+});
+
+chrome.runtime.onSuspend.addListener(() => {
+    log(`suspend !`);
+});
+
+chrome.runtime.onConnect.addListener((port) => {
+    log(`connected !`, port);
+});
+
+chrome.runtime.onConnectExternal.addListener((port) => {
+    log(`connected external !`, port);
+});
+
+chrome.runtime.onMessage.addListener(() => {
+    log(`connected !`);
 });
