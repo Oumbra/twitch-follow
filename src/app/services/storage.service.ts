@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { iif, Observable, of } from 'rxjs';
-import { filter, map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { APP_NAME } from '../app.constantes';
 import { obj } from '../app.utils';
 import { Channel } from '../models/response/channel';
