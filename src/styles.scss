@@ -13,15 +13,25 @@ $default-theme: mat-light-theme($default-app-primary, $default-app-accent, $defa
 
 @include angular-material-theme($default-theme);
 
+// color
+$violet-color: #695fff;
+
 /* You can add global styles to this file, and also import other style files */
 html, body {
     width: 290px;
     height: 300px;
 }
+
 body {
     margin: 0;
     font-family: Roboto,"Helvetica Neue",sans-serif;
     font-size: 14px;
+}
+
+.hidden {
+    visibility: hidden;
+    width: 0;
+    height: 0;
 }
 
 .icon-container{
@@ -48,10 +58,12 @@ body {
 }
 
 .mat-snack-bar-container {
+    display: flex!important;
+    align-content: center;
     background: white;
-    color: #333;
+    color: #0000008a;
     border-radius: 0!important;
-    margin-top: 60px!important;
+    padding: 0 5px 0 15px!important;
 
     &--info {
         border-left: 7px solid rgb(31, 31, 143);
@@ -69,4 +81,20 @@ body {
         border-left: 7px solid #b51f1f;
     }
 
+}
+
+.mat-form-field-label {
+    top: 0 !important;
+    transform: inherit !important;
+    font-style: italic !important;
+}
+.mat-slide-toggle-content {
+    white-space: initial!important;
+    overflow: initial!important;
+    text-overflow: initial!important;
+}
+
+.mat-form-field-label, .mat-slide-toggle-content {
+    color: $violet-color !important;
+    font-size: 14px !important;
 }

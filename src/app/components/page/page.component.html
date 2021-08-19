@@ -1,0 +1,18 @@
+<span class="page_spinner" *ngIf="loading; else page">
+    <mat-spinner diameter="50"></mat-spinner>
+</span>
+<ng-template #page>
+    <ng-content select="header"></ng-content>
+    <ng-content select="content"></ng-content>
+    <div class="page_footer">
+        <ng-content select="footer"></ng-content>
+    </div>
+</ng-template>
+<button class="page_footer_back"
+        [ngClass]="{ 'page_footer_back--hidden' : !returnLink || loading }"
+        (click)="_back$.next()"
+        mat-flat-button
+        #refresh>
+    <mat-icon>chevron_left</mat-icon>
+    Retour
+</button>

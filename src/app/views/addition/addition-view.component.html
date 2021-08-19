@@ -1,38 +1,45 @@
-<mat-form-field floatLabel="never" class="addition-view_input">
-    <input matInput placeholder="Recherche..." [(ngModel)]="query" (ngModelChange)="query$.next($event)" #refresh />
-</mat-form-field>
+<app-page [returnLink]="ERoute.MAIN"
+          [returnDelay]="isEmpty ? 100 : 500" 
+          [ngClass]="{ 'opened': !isEmpty && results.length > 2}">
+    <content>
+        <form [formGroup]="form" #ngForm>
+            <mat-form-field class="addition-view_input">
+                <input matInput placeholder="Recherche" formControlName="query" />
+            </mat-form-field>
+        </form>
 
-<div class="addition-view_container" [ngClass]="{'addition-view_container--opened': !isEmpty && results.length > 2}">
-    <span class="addition-view_spinner" *ngIf="searching && isEmpty; else title">
-        <mat-spinner diameter="50"></mat-spinner>
-    </span>
-    <ng-template #title>
-        <span class="addition-view_counter">{{ isEmpty ? "Aucun résultat" : results.length +" résultat(s)"}}</span>
-    </ng-template>
-        
-    <div class="addition-view_results" [ngClass]="{'addition-view_results--hidden': !query || isEmpty }" (scroll)="scroll$.next($event)">
-        <app-streamer *ngFor="let result of results"
-            [name]="result.display_name"
-            [logo]="result.thumbnail_url"
-            [status]="result.is_live">
-            <button mat-icon-button *ngIf="isNotSelected(result.id)" (click)="add(result)">
-                <mat-icon>add_circle_outline</mat-icon>
-            </button>
-            <div class="icon-container" *ngIf="isSelected(result.id)">
-                <mat-icon color="primary">check_circle_outline</mat-icon>
-            </div>
-            <div class="icon-container" *ngIf="isSelecting(result.id)">
-                <mat-spinner diameter="20"></mat-spinner>
-            </div>
-        </app-streamer>
+        <div class="addition-view_container">
+            <span class="addition-view_spinner" *ngIf="searching && isEmpty; else title">
+                <mat-spinner diameter="50"></mat-spinner>
+            </span>
+            <ng-template #title>
+                <span class="addition-view_counter">{{ isEmpty ? "Aucun résultat" : results.length +" résultat(s)"}}</span>
+            </ng-template>
+                
+            <div class="addition-view_results" 
+                [ngClass]="{'addition-view_results--hidden': !query || isEmpty }"
+                (scroll)="scroll$.next($event)">
 
-        <div class="addition-view_spinner" *ngIf="searching">
-            <mat-spinner diameter="50"></mat-spinner>
+                <app-streamer *ngFor="let result of results"
+                    [name]="result.display_name"
+                    [logo]="result.thumbnail_url"
+                    [status]="result.is_live">
+
+                    <button mat-icon-button *ngIf="isNotSelected(result.id)" (click)="add(result)">
+                        <mat-icon>add_circle_outline</mat-icon>
+                    </button>
+                    <div class="icon-container" *ngIf="isSelected(result.id)">
+                        <mat-icon color="primary">check_circle_outline</mat-icon>
+                    </div>
+                    <div class="icon-container" *ngIf="isSelecting(result.id)">
+                        <mat-spinner diameter="20"></mat-spinner>
+                    </div>
+                </app-streamer>
+
+                <div class="addition-view_spinner" *ngIf="searching">
+                    <mat-spinner diameter="50"></mat-spinner>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-
-<button class="addition-view_back" mat-flat-button (click)="back()">
-    <mat-icon>chevron_left</mat-icon>
-    Retour
-</button>
+    </content>
+</app-page>
