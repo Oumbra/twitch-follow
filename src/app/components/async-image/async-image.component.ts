@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { ELoadState } from 'src/app/enums/load-state';
+import { ELoadState } from 'src/app/enums/load-state.enums';
 import { AbstractComponent } from '../abstract.component';
 
 @Component({

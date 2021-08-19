@@ -1,0 +1,17 @@
+<app-page [returnLink]="ERoute.MAIN">
+    <content>
+        <form [formGroup]="form" #ngForm class="settings-view_form">
+            <mat-form-field floatLabel="always">
+                <mat-label>Temps de rafraichissement</mat-label>
+                <input type="number" formControlName="refreshTime" matInput />
+            </mat-form-field>
+
+            <mat-slide-toggle formControlName="infiniteNotif" class="settings-view_slide">{{ form.get('infiniteNotif').value
+                ? 'La notification reste jusqu\'à l\'action de l\'utilisateur'
+                : 'La notification se ferme au bout d\'un certain temps'
+            }}</mat-slide-toggle>
+        </form>
+
+        <!-- <iframe src="https://www.twitch.tv/Rotary_San"></iframe> -->
+    </content>
+</app-page>

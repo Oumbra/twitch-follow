@@ -1,21 +1,20 @@
 import { Channel } from './response/channel';
 import { Stream } from './response/stream';
 
-export interface Storage {
-    streamers: Streamer[];
+export interface Settings {
+    refreshTime: number;
+    infiniteNotif: boolean;
 }
 
-export class StorageSchema implements Storage {
-    static readonly SKELETON = new StorageSchema();
-    static readonly PROPS = Object.keys(StorageSchema.SKELETON);
+export class SettingsSchema implements Settings {
+    static readonly SKELETON = new SettingsSchema();
+    static readonly PROPS = Object.keys(SettingsSchema.SKELETON);
 
-    streamers: Streamer[] = [];
+    refreshTime: number = 5000;
+    infiniteNotif: boolean = true;
 
     public static isValidSchema(obj: any): boolean {
-        return this.PROPS.filter(property => property in obj).length === this.PROPS.length
-            && (obj as StorageSchema)
-                .streamers
-                .reduce((acc, item) => acc && StreamerSchema.isValidSchema(item), true);
+        return this.PROPS.filter(property => property in obj).length === this.PROPS.length;
     }
 }
 
@@ -43,6 +42,26 @@ export class StreamerSchema implements Streamer {
 
     public static isValidSchema(obj: any): boolean {
         return this.PROPS.filter(property => property in obj).length === this.PROPS.length;
+    }
+}
+
+export interface Storage {
+    streamers: Streamer[];
+    settings: Settings;
+}
+
+export class StorageSchema implements Storage {
+    static readonly SKELETON = new StorageSchema();
+    static readonly PROPS = Object.keys(StorageSchema.SKELETON);
+
+    streamers: Streamer[] = [];
+    settings: Settings = SettingsSchema.SKELETON;
+
+    public static isValidSchema(obj: any): boolean {
+        return this.PROPS.filter(property => property in obj).length === this.PROPS.length
+            && (obj as StorageSchema)
+                .streamers
+                .reduce((acc, item) => acc && StreamerSchema.isValidSchema(item), true);
     }
 }
 

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { slideInAnimation } from './animations/slide.animation';
 import { AbstractElementComponent } from './components/abstract-element.component';
+import { ERoute, getPath } from './enums/route.enums';
 import { StorageSchema } from './models/storage';
 import { StorageService } from './services/storage.service';
 import { ToastService } from './services/toast.service';
@@ -47,6 +48,10 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
 
     activateRoute(e: any) {
         this.viewComponent = e;
+    }
+
+    settings(): void {
+        this.router.navigate([getPath(ERoute.SETTINGS)]);
     }
 
     import(): void {
@@ -99,7 +104,7 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
                         }
                         // sinon on lance la navigation vers la page d'accueil
                         else {
-                            this.zone.run(() => this.router.navigate(['/main']));
+                            this.zone.run(() => this.router.navigate([getPath(ERoute.MAIN)]));
                         }
                         // tricks refresh
                         this.refreshView();

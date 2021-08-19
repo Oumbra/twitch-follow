@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { MatSnackBar } from "@angular/material";
+import { MatSnackBar, MatSnackBarConfig } from "@angular/material";
 import { BasicToastComponent } from "../components/basic-toast/basic-toast.component";
 
 type level = 'info' | 'warn' | 'success' | 'error';
@@ -8,32 +8,37 @@ type level = 'info' | 'warn' | 'success' | 'error';
     providedIn: 'root',
 })
 export class ToastService {
+    readonly DEFAULT_OPTS: any = {
+        verticalPosition: 'top',
+        horizontalPosition: 'center',
+        duration: 2000,
+    }
 
     constructor(private snackbar: MatSnackBar) {}
 
-    info(message: string): void {
-        this.showToast(message, 'info');
+    info(message: string, opts?: MatSnackBarConfig): void {
+        this.showToast(message, 'info', opts);
     }
 
-    warn(message: string): void {
-        this.showToast(message, 'warn');
+    warn(message: string, opts?: MatSnackBarConfig): void {
+        this.showToast(message, 'warn', opts);
     }
     
-    success(message: string): void {
-        this.showToast(message, 'success');
+    success(message: string, opts?: MatSnackBarConfig): void {
+        this.showToast(message, 'success', opts);
     }
     
-    error(message: string): void {
-        this.showToast(message, 'error');
+    error(message: string, opts?: MatSnackBarConfig): void {
+        this.showToast(message, 'error', opts);
     }
 
-    private showToast(message: string, level: level): void {
+    private showToast(message: string, level: level, opts: MatSnackBarConfig): void {
+        ;
         this.snackbar.openFromComponent(BasicToastComponent, {
+            ...this.DEFAULT_OPTS,
             data: message,
-            verticalPosition: 'top',
-            horizontalPosition: 'center',
-            duration: 5000,
             panelClass: `mat-snack-bar-container--${level}`,
+            ...opts
         });
     }
 

@@ -1,20 +1,17 @@
 import { Injectable } from '@angular/core';
+import { mergeWith } from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { APP_NAME } from '../app.constantes';
-import { obj } from '../app.utils';
+import { toObject } from '../app.utils';
 import { Channel } from '../models/response/channel';
-import { convert, Storage, Streamer } from '../models/storage';
+import { convert, Settings, Storage, StorageSchema, Streamer } from '../models/storage';
 import { TwitchService } from './twitch.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class StorageService {
-
-    private readonly SKELETON: Storage = {
-        streamers: [],
-    };
 
     constructor(private twitchSrv: TwitchService) {
     }
@@ -63,6 +60,13 @@ export class StorageService {
         );
     }
 
+    updateSettings(settings: Settings): Observable<void> {
+        return this.storage$.pipe(
+            map(storage => mergeWith({}, storage, { settings })),
+            switchMap(storage => this.setStorage(storage))
+        );
+    }
+
     /**
      * liste de streamer à jour
      */
@@ -88,10 +92,17 @@ export class StorageService {
         );
     }
 
+    get settings$(): Observable<Settings> {
+        return this.storage$.pipe(
+            map(storage => storage.settings)
+        );
+    }
+
     get storage$(): Observable<Storage> {
         return new Observable(observer => {
             chrome.storage.local.get(APP_NAME, items => {
-                observer.next(items[APP_NAME] || this.SKELETON);
+                const updatedStorage: Storage = mergeWith({}, items[APP_NAME], StorageSchema.SKELETON);
+                observer.next(updatedStorage);
                 observer.complete();
             });
         });
@@ -99,7 +110,9 @@ export class StorageService {
 
     private setStorage(storage: Storage): Observable<void> {
         return new Observable(observer => {
-            chrome.storage.local.set(obj(APP_NAME, storage), () => {
+            const updatedStorage = mergeWith(storage, StorageSchema.SKELETON)
+            const appObj = toObject(APP_NAME, updatedStorage);
+            chrome.storage.local.set(appObj, () => {
                 observer.next();
                 observer.complete();
             });

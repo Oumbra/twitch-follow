@@ -1,38 +1,36 @@
-<div class="main-view_container" [ngClass]="{ 'main-view_container--opened': isOpen }">
-    <span class="main-view_spinner" *ngIf="synchronizing && isEmpty; else title">
-        <mat-spinner diameter="50"></mat-spinner>
-    </span>
-    <ng-template #title>
+<app-page [ngClass]="{ 'opened': isOpen }">
+    <content>
         <span class="main-view_counter" *ngIf="isEmpty">Aucun follow</span>
-    </ng-template>
 
-    <div class="main-view_results" [ngClass]="{ 'main-view_results--hidden': isEmpty }">
-        <app-streamer *ngFor="let item of list"
-                    [name]="item.name"
-                    [logo]="item.thumbnail_url"
-                    [status]="item.is_live"
-                    [game_id]="item.game_id"
-                    [viewer_count]="item.viewer_count"
-                    (refresh)="refreshView()">
-            <div class="main-view_dropdown-container">
-                <div class="main-view_dropdown-action" (click)="open(item.name)">
-                    <mat-icon inline="true">open_in_new</mat-icon>
+        <div class="main-view_results" [ngClass]="{ 'main-view_results--hidden': isEmpty }">
+            <app-streamer *ngFor="let item of list"
+                        [name]="item.name"
+                        [logo]="item.thumbnail_url"
+                        [status]="item.is_live"
+                        [game_id]="item.game_id"
+                        [viewer_count]="item.viewer_count"
+                        (refresh)="page.refreshView()">
+                <div class="main-view_dropdown-container">
+                    <div class="main-view_dropdown-action" (click)="open(item.name)">
+                        <mat-icon inline="true">open_in_new</mat-icon>
+                    </div>
+                    <div class="main-view_dropdown-action" [matMenuTriggerFor]="dropMenu">
+                        <mat-icon inline="true">more_vert</mat-icon>
+                    </div>
+                    <mat-menu #dropMenu="matMenu">
+                        <button mat-menu-item [disabled]="isDeleting(item.id)" (click)="delete(item.id)">
+                            <mat-icon>delete_outline</mat-icon>
+                            Supprimer
+                        </button>
+                    </mat-menu>
                 </div>
-                <div class="main-view_dropdown-action" [matMenuTriggerFor]="dropMenu">
-                    <mat-icon inline="true">more_vert</mat-icon>
-                </div>
-                <mat-menu #dropMenu="matMenu">
-                    <button mat-menu-item [disabled]="isDeleting(item.id)" (click)="delete(item.id)">
-                        <mat-icon>delete_outline</mat-icon>
-                        Supprimer
-                    </button>
-                </mat-menu>
-            </div>
-        </app-streamer>
-    </div>
-</div>
-
-<button class="main-view_add" mat-flat-button (click)="toAdd()" #refresh>
-    <mat-icon>add</mat-icon>
-    Ajouter
-</button>
+            </app-streamer>
+        </div>
+    </content>
+    <footer>
+        <button mat-flat-button (click)="navigate.next(ERoute.ADDITION)">
+            <mat-icon>add</mat-icon>
+            Ajouter
+        </button>
+    </footer>
+</app-page>

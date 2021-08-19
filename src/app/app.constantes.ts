@@ -1,3 +1,5 @@
+export const TWITCH_URL: string = 'https://www.twitch.tv/';
+export const USER_URL: string = 'https://api.twitch.tv/helix/users';
 export const STREAM_URL: string = 'https://api.twitch.tv/helix/streams';
 export const CHANNEL_URL: string = 'https://api.twitch.tv/helix/search/channels';
 export const GAME_URL: string = 'https://api.twitch.tv/helix/games';

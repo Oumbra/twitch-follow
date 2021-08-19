@@ -156,7 +156,13 @@ class NativeTwitchService {
 
 class NativeStorageService {
 
-    SKELETON = { streamers: [] };
+    SKELETON = { 
+        streamers: [],
+        settings: {
+            refreshTime: 5000,
+            infiniteNotif: true,
+        }
+    };
     twitchSrv;
 
     constructor() {
@@ -191,6 +197,10 @@ class NativeStorageService {
                 standardCatchError
             );
         });
+    }
+
+    settings$(success) {
+        this.storage$(storage => success(storage.settings));
     }
 
     storage$(success) {
@@ -238,14 +248,23 @@ class NativeScheduleService {
     constructor() {
         this.httpSrv = new NativeHttpService();
         this.storageSrv = new NativeStorageService();
+        this.storageSrv.streamer$(streamers => this.list = streamers);
     }
 
-    schedule(millis) {
-        console.log(`schedule(${millis}) | starting...`);
+    schedule() {
+        this.storageSrv.settings$(settings => {
+            const millis = settings ? settings.refreshTime : 5000;
+            console.log(`schedule(${millis}) | starting...`, settings);
 
-        this.storageSrv.streamer$(streamers => this.list = streamers);
+            setTimeout(() => {
+                this.refreshDatas();
+                this.schedule();
+            }, millis);
+        });
+    }
 
-        setInterval(() => this.storageSrv.streamer$(streamers => {
+    refreshDatas() {
+        this.storageSrv.streamer$(streamers => {
             // Referencer les streamers qui étaient en live
             const lived = this.list.filter(i => i.is_live).map(i => i.id);
             
@@ -257,11 +276,13 @@ class NativeScheduleService {
             // lancer une notif si un live a démarré
             newLivingStreamers.forEach(streamer => this.createNotification(streamer));
 
-            console.log(`${newLivingStreamers.length} new living streamer`);
+            if (newLivingStreamers.length > 0) {
+                console.log(`${newLivingStreamers.length} new living streamer`);
+            }
 
             // mettre à jour les nouveaux status
             this.list = streamers;
-        }), millis);
+        });
     }
 
     createNotification(streamer) {
@@ -276,21 +297,21 @@ class NativeScheduleService {
                         .forEach(item => item.is_live = false);
                     console.warn(`Notification de live pour ${streamer.name} avortée !`, e);
                 },
-                success: blob => {
+                success: blob => this.storageSrv.settings$(settings => {
                     const iconUrl = window.URL.createObjectURL(blob);
                     const opts = {
                         type: "basic",
                         iconUrl,
                         title: `${streamer.name} Live`,
                         message: streamer.title,
-                        requireInteraction: true,
+                        requireInteraction: settings.infiniteNotif,
                         buttons: [
                             {  title: 'Rejoindre' },
                             {  title: 'Pas maintenant' }
                         ],
                     };
                     API.notifications.create(streamer.name, opts);
-                }
+                })
             }
         )
     }

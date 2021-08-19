@@ -11,6 +11,10 @@
 </div>
 
 <mat-menu #colors="matMenu">
+    <button mat-menu-item (click)="settings()">
+        <mat-icon>settings</mat-icon>
+        Paramètres
+    </button>
     <button mat-menu-item (click)="import()">
         <mat-icon>file_upload</mat-icon>
         Importer
