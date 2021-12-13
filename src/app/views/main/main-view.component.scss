@@ -1,4 +1,25 @@
 .main-view {
+
+    &_title {
+        margin: 5px auto;
+        padding: 5px 0;
+        font-size: 17px;
+        text-align: center;
+        width: 95%;
+        height: 22px;
+        
+        &_live {
+            margin-top: 0;
+            color: #347034;
+            border-bottom: 2px solid #347034;
+        }
+        
+        &_offline {
+            color: #a95353;
+            border-bottom: 2px solid #a95353;
+        }
+    }
+
     &_counter {
         align-self: center;
         padding: 10px 0;
@@ -7,8 +28,9 @@
     &_results {
         display: flex;
         flex-wrap: wrap;
-        overflow: auto;
-        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        // flex: 1;
         transition: opacity .5s;
         margin: -10px;
 
@@ -26,7 +48,7 @@
         &-container {
             display: flex;
             flex-wrap: wrap;
-            font-size: 16px;
+            font-size: 20px;
         }
         
         &-action {
@@ -35,11 +57,5 @@
             cursor: pointer;
             margin-left: 5px;
         }
-    }
-}
-
-::ng-deep {
-    app-page.opened {
-        height: 405px;
     }
 }

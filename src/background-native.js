@@ -1,7 +1,7 @@
 'use strict'
 
-const IS_MOZILLA  = typeof browser !== 'undefined';
-const API         = IS_MOZILLA ? browser : chrome;
+const IS_MOZILLA = typeof window.browser !== 'undefined';
+const API = IS_MOZILLA ? window.browser : chrome;
 
 const STREAM_URL = 'https://api.twitch.tv/helix/streams';
 const VALIDATE_URL = 'https://id.twitch.tv/oauth2/validate';
@@ -304,13 +304,20 @@ class NativeScheduleService {
                         iconUrl,
                         title: `${streamer.name} Live`,
                         message: streamer.title,
-                        requireInteraction: settings.infiniteNotif,
-                        buttons: [
-                            {  title: 'Rejoindre' },
-                            {  title: 'Pas maintenant' }
-                        ],
                     };
-                    API.notifications.create(streamer.name, opts);
+
+                    if (IS_MOZILLA) {
+                        API.notifications.create(streamer.name, opts);
+                    } else {
+                        API.notifications.create(streamer.name, {
+                            ...opts,
+                            requireInteraction: settings.infiniteNotif,
+                            buttons: [
+                                {  title: 'Rejoindre' },
+                                {  title: 'Pas maintenant' }
+                            ],
+                        });
+                    }
                 })
             }
         )

@@ -1,9 +1,9 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, Inject, NgZone, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material';
 import { Router, RouterOutlet } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { slideInAnimation } from './animations/slide.animation';
+import { WINDOW_OPENNER } from './app.module';
 import { AbstractElementComponent } from './components/abstract-element.component';
 import { ERoute, getPath } from './enums/route.enums';
 import { StorageSchema } from './models/storage';
@@ -15,7 +15,6 @@ import { MainViewComponent } from './views/main/main-view.component';
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    animations: [slideInAnimation],
 })
 export class AppComponent extends AbstractElementComponent<MatButton> implements OnInit {
 
@@ -27,7 +26,8 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
 
     private viewComponent: AbstractElementComponent<any>;
 
-    constructor(private router: Router,
+    constructor(@Inject(WINDOW_OPENNER) private windowOpenner: Subject<boolean>,
+                private router: Router,
                 private zone: NgZone,
                 private toastSrv: ToastService,
                 private storageSrv: StorageService) {
@@ -40,6 +40,15 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
         this.elements.uploadInput.type = 'file';
         this.elements.uploadInput.accept = this.APPLICATION_JSON;
         this.elements.uploadInput.onchange = file => this.readFile(file);
+
+        this.windowOpenner.subscribe(bool => {
+            const classes: DOMTokenList = document.body.classList;
+            if (bool) {
+                classes.add('opened');
+            } else if (classes.contains('opened')) {
+                classes.remove('opened');
+            }
+        });
     }
 
     prepareRoute(outlet: RouterOutlet) {

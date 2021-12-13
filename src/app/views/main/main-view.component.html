@@ -1,19 +1,40 @@
-<app-page [ngClass]="{ 'opened': isOpen }">
+<app-page>
     <content>
         <span class="main-view_counter" *ngIf="isEmpty">Aucun follow</span>
 
         <div class="main-view_results" [ngClass]="{ 'main-view_results--hidden': isEmpty }">
-            <app-streamer *ngFor="let item of list"
+            <div *ngIf="hasLive" class="main-view_title main-view_title_live">En ligne ({{lives.length}})</div>
+            <app-streamer *ngFor="let item of lives | orderBy:'name'"
                         [name]="item.name"
                         [logo]="item.thumbnail_url"
                         [status]="item.is_live"
                         [game_id]="item.game_id"
                         [viewer_count]="item.viewer_count"
+                        (onClick)="open(item.name)"
                         (refresh)="page.refreshView()">
                 <div class="main-view_dropdown-container">
-                    <div class="main-view_dropdown-action" (click)="open(item.name)">
-                        <mat-icon inline="true">open_in_new</mat-icon>
+                    <div class="main-view_dropdown-action" [matMenuTriggerFor]="dropMenu">
+                        <mat-icon inline="true">more_vert</mat-icon>
                     </div>
+                    <mat-menu #dropMenu="matMenu">
+                        <button mat-menu-item [disabled]="isDeleting(item.id)" (click)="delete(item.id)">
+                            <mat-icon>delete_outline</mat-icon>
+                            Supprimer
+                        </button>
+                    </mat-menu>
+                </div>
+            </app-streamer>
+            
+            <div *ngIf="hasOffline" class="main-view_title main-view_title_offline">Hors ligne ({{offlines.length}})</div>
+            <app-streamer *ngFor="let item of offlines | orderBy:'name'"
+                        [name]="item.name"
+                        [logo]="item.thumbnail_url"
+                        [status]="item.is_live"
+                        [game_id]="item.game_id"
+                        [viewer_count]="item.viewer_count"
+                        (onClick)="open(item.name)"
+                        (refresh)="page.refreshView()">
+                <div class="main-view_dropdown-container">
                     <div class="main-view_dropdown-action" [matMenuTriggerFor]="dropMenu">
                         <mat-icon inline="true">more_vert</mat-icon>
                     </div>
