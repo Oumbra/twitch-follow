@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { interval } from 'rxjs';
+import { interval, Subject } from 'rxjs';
 import { delay, switchMap, takeUntil } from 'rxjs/operators';
 import { TWITCH_URL } from 'src/app/app.constantes';
+import { WINDOW_OPENNER } from 'src/app/app.module';
 import { AbstractPageComponent } from 'src/app/components/abstract-page.component';
 import { Streamer } from 'src/app/models/storage';
 import { StorageService } from 'src/app/services/storage.service';
-import { TwitchService } from 'src/app/services/twitch.service';
 
 @Component({
     templateUrl: './main-view.component.html',
@@ -17,15 +17,25 @@ export class MainViewComponent extends AbstractPageComponent implements OnInit {
     list: Streamer[];
     synchronizing: boolean;
     isEmpty: boolean;
-    isOpen: boolean;
     navigateDelay: number;
+    hasLive: boolean = false;
+    hasOffline: boolean = false;
 
     private deleting: { [key: number]: any } = {};
+    private isOpen: boolean = false;
 
     constructor(protected router: Router,
-                private twitchSrv: TwitchService,
+                @Inject(WINDOW_OPENNER) private windowOpenner: Subject<boolean>,
                 private storageSrv: StorageService) {
         super(router);
+    }
+
+    get lives(): Streamer[] {
+        return this.list.filter(streamer => streamer.is_live);
+    }
+
+    get offlines(): Streamer[] {
+        return this.list.filter(streamer => !streamer.is_live);
     }
 
     ngOnInit() {
@@ -34,7 +44,7 @@ export class MainViewComponent extends AbstractPageComponent implements OnInit {
         this.load();
 
         this.navigate.subscribe(() => {
-            this.isOpen = false;
+            this.setOpen(false);
             this.page.setLoading(true);
         });
 
@@ -44,9 +54,9 @@ export class MainViewComponent extends AbstractPageComponent implements OnInit {
                 switchMap(() => this.storageSrv.streamer$),
             )
             .subscribe(streamers => {
-                this.list = this.list
-                    .map(this.updateItem(streamers))
-                    .sort(this.sortStreamer());
+                this.list = this.list.map(this.updateItem(streamers));
+                this.hasLive = this.lives.length > 0;
+                this.hasOffline = this.offlines.length > 0;
                 this.page.refreshView();
             });
     }
@@ -59,15 +69,17 @@ export class MainViewComponent extends AbstractPageComponent implements OnInit {
         this.list = [];
         this.synchronizing = true;
         this.isEmpty = true;
-        this.isOpen = false;
+        this.setOpen(false);
 
         this.storageSrv.streamer$
             .pipe(takeUntil(this.destroy$))
             .subscribe(streamers => {
-                this.list = streamers.sort(this.sortStreamer());
+                this.list = streamers;
+                this.hasLive = this.lives.length > 0;
+                this.hasOffline = this.offlines.length > 0;
                 this.isEmpty = this.list.length === 0;
-                this.isOpen = this.list.length > 3;
                 this.synchronizing = false;
+                this.setOpen(this.list.length > 3);
                 this.page.setLoading(false);
             });
     }
@@ -96,18 +108,7 @@ export class MainViewComponent extends AbstractPageComponent implements OnInit {
         return this.deleting.hasOwnProperty(id)
     }
 
-    private sortStreamer(): (a: Streamer, b: Streamer) => number {
-        return (a, b) => {
-            const status = a.is_live === b.is_live ? 0 : a.is_live ? -1 : 1;
-            const name = a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-            // A en live alors que B non
-            return status < 0 ? status :
-                // status egal ET nom precedent
-                status === 0 && name < 0 ? -1 : 1;
-        }
-    }
-
-    private updateItem(streamers: Streamer[]): (Streamer) => Streamer {
+    private updateItem(streamers: Streamer[]): (s: Streamer) => Streamer {
         return item => {
             const streamer = streamers.find(s => s.id === item.id);
             item.title = streamer.title;
@@ -117,5 +118,10 @@ export class MainViewComponent extends AbstractPageComponent implements OnInit {
             item.game_id = streamer.game_id;
             return item;
         }
+    }
+
+    private setOpen(is: boolean): void {
+        this.isOpen = is;
+        this.windowOpenner.next(is);
     }
 }

@@ -1,9 +1,3 @@
-// @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
-// @import '@angular/material/prebuilt-themes/indigo-pink.css';
-// @import '@angular/material/prebuilt-themes/pink-bluegrey.css';
-// @import '@angular/material/prebuilt-themes/purple-green.css';
-
-
 @import '~@angular/material/theming';
 @include mat-core();
 $default-app-primary: mat-palette($mat-purple);
@@ -15,17 +9,25 @@ $default-theme: mat-light-theme($default-app-primary, $default-app-accent, $defa
 
 // color
 $violet-color: #695fff;
+$grey-color: #666;
+$red-color: #6d2222;
 
 /* You can add global styles to this file, and also import other style files */
 html, body {
-    width: 290px;
-    height: 300px;
+    overflow: hidden;
 }
 
 body {
     margin: 0;
     font-family: Roboto,"Helvetica Neue",sans-serif;
     font-size: 14px;
+    transition: height .5s;
+    width: 290px;
+    height: 300px;
+    
+    &.opened {
+        height: 405px;
+    }
 }
 
 .hidden {
@@ -86,8 +88,8 @@ body {
 .mat-form-field-label {
     top: 0 !important;
     transform: inherit !important;
-    font-style: italic !important;
 }
+
 .mat-slide-toggle-content {
     white-space: initial!important;
     overflow: initial!important;
@@ -95,6 +97,6 @@ body {
 }
 
 .mat-form-field-label, .mat-slide-toggle-content {
-    color: $violet-color !important;
+    color: $grey-color !important;
     font-size: 14px !important;
 }

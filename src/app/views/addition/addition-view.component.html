@@ -1,6 +1,5 @@
 <app-page [returnLink]="ERoute.MAIN"
-          [returnDelay]="isEmpty ? 100 : 500" 
-          [ngClass]="{ 'opened': !isEmpty && results.length > 2}">
+          [returnDelay]="isEmpty ? 100 : 500" >
     <content>
         <form [formGroup]="form" #ngForm>
             <mat-form-field class="addition-view_input">

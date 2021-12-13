@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CLIENT_ID, CLIENT_SECRET, TOKEN_URL, TWITCH_TOKEN_NAME, VALIDATE_URL } from '../app.constantes';
+import { API_OBJECT } from '../app.module';
 import { standardCatchError, toObject } from '../app.utils';
 
 
@@ -11,7 +12,8 @@ import { standardCatchError, toObject } from '../app.utils';
 })
 export class TokenService {
 
-    constructor(private httpClient: HttpClient) { 
+    constructor(@Inject(API_OBJECT) private API_OBJ: any,
+                private httpClient: HttpClient) { 
     }
     
     public getToken(): Observable<string> {
@@ -38,14 +40,14 @@ export class TokenService {
         return this.httpClient.post(`${TOKEN_URL}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`, null, { responseType: 'json' })
             .pipe(
                 map((datas: any) => datas.access_token),
-                tap(token => chrome.storage.sync.set(toObject(TWITCH_TOKEN_NAME, token))),
+                tap(token => this.API_OBJ.storage.sync.set(toObject(TWITCH_TOKEN_NAME, token))),
                 catchError(standardCatchError),
             );
     }
 
     private recoverToken(): Observable<string> {
         return new Observable((observer) => {
-            chrome.storage.local.get(TWITCH_TOKEN_NAME, (items: { [key: string]: any }) => {
+            this.API_OBJ.storage.local.get(TWITCH_TOKEN_NAME, (items: { [key: string]: any }) => {
                 observer.next(items[TWITCH_TOKEN_NAME]);
                 observer.complete();
             });

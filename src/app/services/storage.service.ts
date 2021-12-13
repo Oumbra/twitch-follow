@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { mergeWith } from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { APP_NAME } from '../app.constantes';
+import { API_OBJECT } from '../app.module';
 import { toObject } from '../app.utils';
 import { Channel } from '../models/response/channel';
 import { convert, Settings, Storage, StorageSchema, Streamer } from '../models/storage';
@@ -13,7 +14,8 @@ import { TwitchService } from './twitch.service';
 })
 export class StorageService {
 
-    constructor(private twitchSrv: TwitchService) {
+    constructor(@Inject(API_OBJECT) private API_OBJ: any,
+                private twitchSrv: TwitchService) {
     }
 
     addStreamer(channel: Channel): Observable<void> {
@@ -46,7 +48,6 @@ export class StorageService {
                 };
             }),
             // stop le traitement si aucun novuel élement n'est trouvé
-            // filter(tuple => tuple.distinct.length > 0),
             tap(tuple => {
                 // ajout des élements non référencés
                 tuple.storage.streamers.push(
@@ -100,7 +101,7 @@ export class StorageService {
 
     get storage$(): Observable<Storage> {
         return new Observable(observer => {
-            chrome.storage.local.get(APP_NAME, items => {
+            this.API_OBJ.storage.local.get(APP_NAME, items => {
                 const updatedStorage: Storage = mergeWith({}, items[APP_NAME], StorageSchema.SKELETON);
                 observer.next(updatedStorage);
                 observer.complete();
@@ -112,7 +113,7 @@ export class StorageService {
         return new Observable(observer => {
             const updatedStorage = mergeWith(storage, StorageSchema.SKELETON)
             const appObj = toObject(APP_NAME, updatedStorage);
-            chrome.storage.local.set(appObj, () => {
+            this.API_OBJ.storage.local.set(appObj, () => {
                 observer.next();
                 observer.complete();
             });

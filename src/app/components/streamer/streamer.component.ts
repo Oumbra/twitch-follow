@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { pipe, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { measureText } from 'src/app/app.utils';
@@ -20,6 +20,7 @@ export class StreamerComponent extends AbstractComponent implements AfterViewIni
   @Input() status: boolean;
   @Input() game_id?: number;
   @Input() viewer_count?: number;
+  @Output() onClick: Subject<any> = new Subject();
   @Output() refresh: Subject<void> = new Subject();
 
   tooltip: string = '';
@@ -32,6 +33,13 @@ export class StreamerComponent extends AbstractComponent implements AfterViewIni
 
   get el() {
     return this.element.nativeElement;
+  }
+
+  @HostListener('click', ['$event.target'])
+  onElementClick(target: HTMLElement) {
+    if (!this.isButtonContainer(target)) {
+      this.onClick.next(target);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -77,6 +85,11 @@ export class StreamerComponent extends AbstractComponent implements AfterViewIni
     } while (Math.round(Math.abs(count) * r) / r >= thresh && u < units.length - 1);
   
     return `${count.toFixed(dp)}`.replace('.0', '') + units[u];
+  }
+
+  private isButtonContainer(element: HTMLElement): boolean {
+    const isOrIn: boolean = element.classList.contains('app-streamer_buttons-container') || false;
+    return !isOrIn && !!element.parentElement ? this.isButtonContainer(element.parentElement) : isOrIn;
   }
 
 }

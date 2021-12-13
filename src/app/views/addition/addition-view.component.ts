@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { WINDOW_OPENNER } from 'src/app/app.module';
 import { AbstractFormComponent } from 'src/app/components/abstract-form.component';
 import { Channel } from 'src/app/models/response/channel';
 import { TwitchResponse, TwitchResponseSkeleton } from 'src/app/models/response/twitch-response';
@@ -25,6 +26,7 @@ export class AdditionViewComponent extends AbstractFormComponent implements OnIn
 
     constructor(protected router: Router,
                 protected formBuilder: FormBuilder,
+                @Inject(WINDOW_OPENNER) private windowOpenner: Subject<boolean>,
                 private storageSrv: StorageService,
                 private twitchSrv: TwitchService) {
         super(router, formBuilder.group({ query: new FormControl() }));
@@ -49,6 +51,7 @@ export class AdditionViewComponent extends AbstractFormComponent implements OnIn
                 distinctUntilChanged(),
                 tap(() => this.results = []),
                 tap(() => this.isEmpty = true),
+                tap(() => this.windowOpenner.next(false)),
                 filter(query => !!query && query.length > 0),
                 tap(() => this.searching = true),
                 switchMap(query => this.twitchSrv.searchChannel({ query })),
@@ -108,6 +111,7 @@ export class AdditionViewComponent extends AbstractFormComponent implements OnIn
                 ...response.data.sort(StringUtils.compareBy('display_name'))
             );
             this.isEmpty = this.results.length === 0;
+            this.windowOpenner.next(!this.isEmpty && this.results.length > 2);
 
             this.page.refreshView();
         };

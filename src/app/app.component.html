@@ -6,7 +6,8 @@
     </button>
 </mat-toolbar>
 
-<div class="app-root_container" [@routeAnimations]="prepareRoute(outlet)">
+<!-- <div class="app-root_container" [@routeAnimations]="prepareRoute(outlet)"> -->
+<div class="app-root_container">
     <router-outlet (activate)="activateRoute($event)" #outlet=outlet></router-outlet>
 </div>
 
