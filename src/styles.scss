@@ -6,11 +6,8 @@ $default-app-warn:    mat-palette($mat-red);
 $default-theme: mat-light-theme($default-app-primary, $default-app-accent, $default-app-warn);
 
 @include angular-material-theme($default-theme);
-
 // color
-$violet-color: #695fff;
-$grey-color: #666;
-$red-color: #6d2222;
+@import 'colors';
 
 /* You can add global styles to this file, and also import other style files */
 html, body {
@@ -27,6 +24,56 @@ body {
     
     &.opened {
         height: 405px;
+    }
+    
+    &:not(.dark) {
+        .mat-toolbar {
+            background-color: white;
+            color: $black-color;
+        }
+        .mat-form-field-label, .mat-slide-toggle-content {
+            color: $grey-color !important;
+        }
+        .mat-snack-bar-container {
+            background: white;
+            color: $black-color;
+        }
+
+        app-streamer {
+            &:hover {
+                background-color: aliceblue;
+            }
+            &_activity {
+                color: $grey-color;
+            }
+        }
+    }
+
+    &.dark {
+        .mat-toolbar {
+            background-color: $dark-grey-color;
+            color: $light-grey-color;
+        }
+        .mat-flat-button {
+            border-top: 1px solid $grey-color;
+        }
+        .mat-form-field-label, .mat-slide-toggle-content {
+            color: $light-grey-color !important;
+        }
+
+        .app-root_container, .mat-flat-button, .mat-snack-bar-container {
+            background-color: $dark-grey-color;
+            color: $light-grey-color;
+        }
+        
+        app-streamer {
+            &:hover {
+                background-color: $black-color;
+            }
+            &_activity {
+                color: $grey-color;
+            }
+        }
     }
 }
 
@@ -59,28 +106,30 @@ body {
     line-height: 30px;
 }
 
+.mat-toolbar {
+    font-weight: bold;
+}
+
 .mat-snack-bar-container {
     display: flex!important;
     align-content: center;
-    background: white;
-    color: #0000008a;
     border-radius: 0!important;
     padding: 0 5px 0 15px!important;
 
     &--info {
-        border-left: 7px solid rgb(31, 31, 143);
+        border-left: 7px solid $blue-color;
     }
 
     &--warn {
-        border-left: 7px solid rgb(194, 194, 44);
+        border-left: 7px solid $yellow-color;
     }
 
     &--success {
-        border-left: 7px solid rgb(20, 99, 20);
+        border-left: 7px solid $light-green-color;
     }
 
     &--error {
-        border-left: 7px solid #b51f1f;
+        border-left: 7px solid $red-color;
     }
 
 }
@@ -97,6 +146,5 @@ body {
 }
 
 .mat-form-field-label, .mat-slide-toggle-content {
-    color: $grey-color !important;
     font-size: 14px !important;
 }

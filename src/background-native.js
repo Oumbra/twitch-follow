@@ -161,6 +161,7 @@ class NativeStorageService {
         settings: {
             refreshTime: 5000,
             infiniteNotif: true,
+            darkMode: false,
         }
     };
     twitchSrv;

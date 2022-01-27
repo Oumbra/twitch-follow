@@ -4,6 +4,7 @@ import { Stream } from './response/stream';
 export interface Settings {
     refreshTime: number;
     infiniteNotif: boolean;
+    darkMode: boolean;
 }
 
 export class SettingsSchema implements Settings {
@@ -12,6 +13,7 @@ export class SettingsSchema implements Settings {
 
     refreshTime: number = 5000;
     infiniteNotif: boolean = true;
+    darkMode: boolean = false;
 
     public static isValidSchema(obj: any): boolean {
         return this.PROPS.filter(property => property in obj).length === this.PROPS.length;

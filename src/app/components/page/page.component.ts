@@ -17,7 +17,7 @@ export class PageComponent extends AbstractElementComponent<MatButton> implement
 
     @Input() returnLink?: ERoute;
     @Input() returnDelay?: number;
-
+    
     _back$: Subject<void> = new Subject();
     loading: boolean = true;
 

@@ -102,7 +102,7 @@ export class StorageService {
     get storage$(): Observable<Storage> {
         return new Observable(observer => {
             this.API_OBJ.storage.local.get(APP_NAME, items => {
-                const updatedStorage: Storage = mergeWith({}, items[APP_NAME], StorageSchema.SKELETON);
+                const updatedStorage: Storage = mergeWith({}, StorageSchema.SKELETON, items[APP_NAME]);
                 observer.next(updatedStorage);
                 observer.complete();
             });
@@ -111,7 +111,7 @@ export class StorageService {
 
     private setStorage(storage: Storage): Observable<void> {
         return new Observable(observer => {
-            const updatedStorage = mergeWith(storage, StorageSchema.SKELETON)
+            const updatedStorage = mergeWith({}, StorageSchema.SKELETON, storage);
             const appObj = toObject(APP_NAME, updatedStorage);
             this.API_OBJ.storage.local.set(appObj, () => {
                 observer.next();

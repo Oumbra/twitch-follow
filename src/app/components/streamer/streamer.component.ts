@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { pipe, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { measureText } from 'src/app/app.utils';
 import { TwitchService } from 'src/app/services/twitch.service';

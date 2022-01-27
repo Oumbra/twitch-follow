@@ -1,12 +1,11 @@
 <mat-toolbar color="primary">
-    <img src="../assets/twitch-flat-white.png" width="32" />
+    <img src="../assets/twitch-flat.png" width="32" />
     <span>Twitch follow</span>
     <button mat-icon-button [matMenuTriggerFor]="colors" #refresh>
         <mat-icon>more_vert</mat-icon>
     </button>
 </mat-toolbar>
 
-<!-- <div class="app-root_container" [@routeAnimations]="prepareRoute(outlet)"> -->
 <div class="app-root_container">
     <router-outlet (activate)="activateRoute($event)" #outlet=outlet></router-outlet>
 </div>

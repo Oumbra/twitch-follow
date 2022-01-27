@@ -25,8 +25,8 @@ export class MainViewComponent extends AbstractPageComponent implements OnInit {
     private isOpen: boolean = false;
 
     constructor(protected router: Router,
-                @Inject(WINDOW_OPENNER) private windowOpenner: Subject<boolean>,
-                private storageSrv: StorageService) {
+                private storageSrv: StorageService,
+                @Inject(WINDOW_OPENNER) private windowOpenner: Subject<boolean>) {
         super(router);
     }
 

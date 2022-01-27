@@ -1,3 +1,5 @@
+@import '../../../colors';
+
 .main-view {
 
     &_title {
@@ -9,14 +11,13 @@
         height: 22px;
         
         &_live {
-            margin-top: 0;
-            color: #347034;
-            border-bottom: 2px solid #347034;
+            color: $green-color;
+            border-bottom: 2px solid $green-color;
         }
         
         &_offline {
-            color: #a95353;
-            border-bottom: 2px solid #a95353;
+            color: $light-red-color;
+            border-bottom: 2px solid $light-red-color;
         }
     }
 
@@ -30,7 +31,6 @@
         flex-wrap: wrap;
         overflow-y: auto;
         overflow-x: hidden;
-        // flex: 1;
         transition: opacity .5s;
         margin: -10px;
 

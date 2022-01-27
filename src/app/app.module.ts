@@ -19,6 +19,7 @@ import { SettingsViewComponent } from './views/settings/settings-view.component'
 
 export const API_OBJECT = new InjectionToken<any>('ApiObject');
 export const WINDOW_OPENNER = new InjectionToken<Subject<boolean>>('WindowOpenner');
+export const DARK_MODE = new InjectionToken<Subject<boolean>>('DarkMode');
 
 const MAT_MODULES = [
   MatCardModule,
@@ -71,9 +72,10 @@ const COMPONENTS = [
   providers: [
     { provide: API_OBJECT, useValue: typeof window['browser'] !== 'undefined' ? window['browser'] : chrome},
     { provide: WINDOW_OPENNER, useValue: new BehaviorSubject(false)},
+    { provide: DARK_MODE, useValue: new BehaviorSubject(false)},
   ],
   bootstrap: [
     AppComponent
   ]
 })
-export class AppModule { }
+export class AppModule {}
