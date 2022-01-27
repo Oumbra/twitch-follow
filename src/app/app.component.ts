@@ -3,7 +3,7 @@ import { MatButton } from '@angular/material';
 import { Router, RouterOutlet } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { WINDOW_OPENNER } from './app.module';
+import { DARK_MODE, WINDOW_OPENNER } from './app.module';
 import { AbstractElementComponent } from './components/abstract-element.component';
 import { ERoute, getPath } from './enums/route.enums';
 import { StorageSchema } from './models/storage';
@@ -18,8 +18,9 @@ import { MainViewComponent } from './views/main/main-view.component';
 })
 export class AppComponent extends AbstractElementComponent<MatButton> implements OnInit {
 
+    private readonly CLASSES: DOMTokenList = document.body.classList;
     private readonly APPLICATION_JSON = 'application/json';
-    private readonly elements = {
+    private readonly ELEMENTS = {
         downloadLink: null as HTMLElement,
         uploadInput: null as HTMLInputElement,
     }
@@ -27,32 +28,38 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
     private viewComponent: AbstractElementComponent<any>;
 
     constructor(@Inject(WINDOW_OPENNER) private windowOpenner: Subject<boolean>,
+                @Inject(DARK_MODE) private darkMode: Subject<boolean>,
                 private router: Router,
                 private zone: NgZone,
                 private toastSrv: ToastService,
-                private storageSrv: StorageService) {
+                protected storageSrv: StorageService) {
         super();
     }
 
     ngOnInit() {
-        this.elements.downloadLink = document.createElement('a');
-        this.elements.uploadInput = document.createElement('input');
-        this.elements.uploadInput.type = 'file';
-        this.elements.uploadInput.accept = this.APPLICATION_JSON;
-        this.elements.uploadInput.onchange = file => this.readFile(file);
+        this.ELEMENTS.downloadLink = document.createElement('a');
+        this.ELEMENTS.uploadInput = document.createElement('input');
+        this.ELEMENTS.uploadInput.type = 'file';
+        this.ELEMENTS.uploadInput.accept = this.APPLICATION_JSON;
+        this.ELEMENTS.uploadInput.onchange = file => this.readFile(file);
+
+        this.darkMode.subscribe(bool => {
+            if (bool) {
+                this.CLASSES.add('dark');
+            } else if (this.CLASSES.contains('dark')) {
+                this.CLASSES.remove('dark');
+            }
+        })
 
         this.windowOpenner.subscribe(bool => {
-            const classes: DOMTokenList = document.body.classList;
             if (bool) {
-                classes.add('opened');
-            } else if (classes.contains('opened')) {
-                classes.remove('opened');
+                this.CLASSES.add('opened');
+            } else if (this.CLASSES.contains('opened')) {
+                this.CLASSES.remove('opened');
             }
         });
-    }
 
-    prepareRoute(outlet: RouterOutlet) {
-        return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+        this.storageSrv.settings$.subscribe(settings => this.darkMode.next(settings.darkMode));
     }
 
     activateRoute(e: any) {
@@ -64,7 +71,7 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
     }
 
     import(): void {
-        this.elements.uploadInput.dispatchEvent(new MouseEvent('click'));
+        this.ELEMENTS.uploadInput.dispatchEvent(new MouseEvent('click'));
     }
 
     export(): void {
@@ -76,7 +83,7 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
             )
             .subscribe(
                 url => {
-                    const el: HTMLElement = this.elements.downloadLink;
+                    const el: HTMLElement = this.ELEMENTS.downloadLink;
                     el.setAttribute('href', url);
                     el.setAttribute('download', `twitch-follow_${new Date().toISOString()}.backup.json`);
                     el.dispatchEvent(new MouseEvent('click'));
@@ -125,7 +132,7 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
             this.toastSrv.error('File is not a JSON !');
         }
         // reset de l'input file
-        this.elements.uploadInput.value = null;
+        this.ELEMENTS.uploadInput.value = null;
     }
 
     private isValidJSON(json: any): boolean {

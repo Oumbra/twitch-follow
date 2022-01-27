@@ -1,9 +1,9 @@
-@import '../../..//styles';
+@import '../../../colors';
 
 .settings-view {
     &_slide {
         white-space: initial;
-        height: auto;
+        height: 35px;
         line-height: initial;
     }
 }

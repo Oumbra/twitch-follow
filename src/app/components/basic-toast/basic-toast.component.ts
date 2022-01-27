@@ -1,5 +1,5 @@
 import { Component, Inject } from "@angular/core";
-import { MatSnackBar, MatSnackBarRef, MAT_SNACK_BAR_DATA } from "@angular/material";
+import { MatSnackBarRef, MAT_SNACK_BAR_DATA } from "@angular/material";
 import { AbstractComponent } from "../abstract.component";
 
 @Component({
@@ -16,6 +16,5 @@ export class BasicToastComponent extends AbstractComponent {
 
     close(): void {
         this.sbRef.dismiss();
-        console.log('close');
     }
 }

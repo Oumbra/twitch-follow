@@ -1,3 +1,5 @@
+@import '../../../colors';
+
 app-page {
     display: flex;
     flex-direction: column;
@@ -30,7 +32,7 @@ content {
     transition: height .5s;
     padding: 10px;
     max-width: calc(100% - 20px);
-    height: calc(100% - 56px);
+    height: calc(100% - 57px);
 
     & > form {
         max-width: 100%;
