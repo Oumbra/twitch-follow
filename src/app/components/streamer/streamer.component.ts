@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { measureText } from 'src/app/app.utils';
 import { TwitchService } from 'src/app/services/twitch.service';
+import { DomUtils } from 'src/app/utils/dom.utils';
 import { AbstractComponent } from '../abstract.component';
 
 @Component({
@@ -37,7 +38,7 @@ export class StreamerComponent extends AbstractComponent implements AfterViewIni
 
   @HostListener('click', ['$event.target'])
   onElementClick(target: HTMLElement) {
-    if (!this.isButtonContainer(target)) {
+    if (DomUtils.notIsOrHasParent('#btn-container', target)) {
       this.onClick.next(target);
     }
   }
@@ -85,11 +86,6 @@ export class StreamerComponent extends AbstractComponent implements AfterViewIni
     } while (Math.round(Math.abs(count) * r) / r >= thresh && u < units.length - 1);
   
     return `${count.toFixed(dp)}`.replace('.0', '') + units[u];
-  }
-
-  private isButtonContainer(element: HTMLElement): boolean {
-    const isOrIn: boolean = element.classList.contains('app-streamer_buttons-container') || false;
-    return !isOrIn && !!element.parentElement ? this.isButtonContainer(element.parentElement) : isOrIn;
   }
 
 }

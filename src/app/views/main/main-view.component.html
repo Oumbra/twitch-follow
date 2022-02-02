@@ -12,17 +12,12 @@
                         [viewer_count]="item.viewer_count"
                         (onClick)="open(item.name)"
                         (refresh)="page.refreshView()">
-                <div class="main-view_dropdown-container">
-                    <div class="main-view_dropdown-action" [matMenuTriggerFor]="dropMenu">
-                        <mat-icon inline="true">more_vert</mat-icon>
-                    </div>
-                    <mat-menu #dropMenu="matMenu">
-                        <button mat-menu-item [disabled]="isDeleting(item.id)" (click)="delete(item.id)">
-                            <mat-icon>delete_outline</mat-icon>
-                            Supprimer
-                        </button>
-                    </mat-menu>
-                </div>
+                <button mat-icon-button 
+                        title="Supprimer"
+                        [disabled]="isDeleting(item.id)"
+                        (click)="delete(item.id)">
+                    <mat-icon>delete_outline</mat-icon>
+                </button>
             </app-streamer>
             
             <div *ngIf="hasOffline" class="main-view_title main-view_title_offline">Hors ligne ({{offlines.length}})</div>
@@ -34,17 +29,12 @@
                         [viewer_count]="item.viewer_count"
                         (onClick)="open(item.name)"
                         (refresh)="page.refreshView()">
-                <div class="main-view_dropdown-container">
-                    <div class="main-view_dropdown-action" [matMenuTriggerFor]="dropMenu">
-                        <mat-icon inline="true">more_vert</mat-icon>
-                    </div>
-                    <mat-menu #dropMenu="matMenu">
-                        <button mat-menu-item [disabled]="isDeleting(item.id)" (click)="delete(item.id)">
-                            <mat-icon>delete_outline</mat-icon>
-                            Supprimer
-                        </button>
-                    </mat-menu>
-                </div>
+                <button mat-icon-button 
+                        title="Supprimer"
+                        [disabled]="isDeleting(item.id)"
+                        (click)="delete(item.id)">
+                    <mat-icon>delete_outline</mat-icon>
+                </button>
             </app-streamer>
         </div>
     </content>

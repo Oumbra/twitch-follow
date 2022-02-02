@@ -5,6 +5,7 @@ import { Subject } from "rxjs";
 import { debounceTime, filter, switchMap, tap } from "rxjs/operators";
 import { DARK_MODE } from "src/app/app.module";
 import { AbstractFormComponent } from "src/app/components/abstract-form.component";
+import { SettingsSchema } from "src/app/models/storage";
 import { StorageService } from "src/app/services/storage.service";
 import { ToastService } from "src/app/services/toast.service";
 
@@ -14,17 +15,15 @@ import { ToastService } from "src/app/services/toast.service";
 })
 export class SettingsViewComponent extends AbstractFormComponent implements OnInit {
     
-    constructor(@Inject(DARK_MODE) private darkMode: Subject<boolean>,
-                protected router: Router,
+    constructor(protected router: Router,
                 protected formBuilder: FormBuilder,
                 protected storageSrv: StorageService,
                 private toastSrv: ToastService) {
         super(
             router,
             formBuilder.group({
-                refreshTime: new FormControl(5000, [Validators.required, Validators.min(5000)]),
+                refreshTime: new FormControl(SettingsSchema.SKELETON.refreshTime, [Validators.required, Validators.min(10000)]),
                 infiniteNotif: new FormControl(true),
-                darkMode: new FormControl(false),
             })
         );
     }
@@ -41,7 +40,6 @@ export class SettingsViewComponent extends AbstractFormComponent implements OnIn
             .pipe(
                 filter(() => this.form.valid),
                 debounceTime(500),
-                tap(settings => this.darkMode.next(settings.darkMode)),
                 switchMap(values => this.storageSrv.updateSettings(values))
             )
             .subscribe(

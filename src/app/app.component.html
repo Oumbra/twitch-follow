@@ -1,7 +1,7 @@
 <mat-toolbar color="primary">
     <img src="../assets/twitch-flat.png" width="32" />
     <span>Twitch follow</span>
-    <button mat-icon-button [matMenuTriggerFor]="colors" #refresh>
+    <button mat-icon-button [matMenuTriggerFor]="menu" #refresh>
         <mat-icon>more_vert</mat-icon>
     </button>
 </mat-toolbar>
@@ -10,7 +10,7 @@
     <router-outlet (activate)="activateRoute($event)" #outlet=outlet></router-outlet>
 </div>
 
-<mat-menu #colors="matMenu">
+<mat-menu #menu="matMenu" [formGroup]="form">
     <button mat-menu-item (click)="settings()">
         <mat-icon>settings</mat-icon>
         Paramètres
@@ -23,4 +23,9 @@
         <mat-icon>file_download</mat-icon>
         Exporter
     </button>
+    <div mat-menu-item (click)="onClickSlider($event)" class="mat-menu-item_slide">
+        <mat-icon>light_mode</mat-icon>
+        <mat-slide-toggle id=dark-mode-toggle formControlName="darkMode"></mat-slide-toggle>
+        <mat-icon>dark_mode</mat-icon>
+    </div>
 </mat-menu>

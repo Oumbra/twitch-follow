@@ -5,6 +5,7 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CLIENT_ID, CLIENT_SECRET, TOKEN_URL, TWITCH_TOKEN_NAME, VALIDATE_URL } from '../app.constantes';
 import { API_OBJECT } from '../app.module';
 import { standardCatchError, toObject } from '../app.utils';
+import { IExtensionApi, IStorage } from '../models/local-storage';
 
 
 @Injectable({
@@ -12,8 +13,11 @@ import { standardCatchError, toObject } from '../app.utils';
 })
 export class TokenService {
 
-    constructor(@Inject(API_OBJECT) private API_OBJ: any,
-                private httpClient: HttpClient) { 
+    private storage: IStorage;
+
+    constructor(@Inject(API_OBJECT) private API_OBJ: IExtensionApi,
+                private httpClient: HttpClient) {
+        this.storage = API_OBJ.storage;
     }
     
     public getToken(): Observable<string> {
@@ -32,7 +36,7 @@ export class TokenService {
                     ? of(token)
                     : this.refreshToken()
                 ),
-                catchError(standardCatchError),
+                catchError(() => this.refreshToken()),
             );
     }
 
@@ -40,14 +44,14 @@ export class TokenService {
         return this.httpClient.post(`${TOKEN_URL}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`, null, { responseType: 'json' })
             .pipe(
                 map((datas: any) => datas.access_token),
-                tap(token => this.API_OBJ.storage.sync.set(toObject(TWITCH_TOKEN_NAME, token))),
+                tap(token => this.storage.local.set(toObject(TWITCH_TOKEN_NAME, token))),
                 catchError(standardCatchError),
             );
     }
 
     private recoverToken(): Observable<string> {
         return new Observable((observer) => {
-            this.API_OBJ.storage.local.get(TWITCH_TOKEN_NAME, (items: { [key: string]: any }) => {
+            this.storage.local.get(TWITCH_TOKEN_NAME, (items: { [key: string]: any }) => {
                 observer.next(items[TWITCH_TOKEN_NAME]);
                 observer.complete();
             });

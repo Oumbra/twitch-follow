@@ -5,6 +5,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { APP_NAME } from '../app.constantes';
 import { API_OBJECT } from '../app.module';
 import { toObject } from '../app.utils';
+import { IExtensionApi, IStorage } from '../models/local-storage';
 import { Channel } from '../models/response/channel';
 import { convert, Settings, Storage, StorageSchema, Streamer } from '../models/storage';
 import { TwitchService } from './twitch.service';
@@ -14,8 +15,11 @@ import { TwitchService } from './twitch.service';
 })
 export class StorageService {
 
-    constructor(@Inject(API_OBJECT) private API_OBJ: any,
+    private storage: IStorage;
+
+    constructor(@Inject(API_OBJECT) private API_OBJ: IExtensionApi,
                 private twitchSrv: TwitchService) {
+        this.storage = API_OBJ.storage;
     }
 
     addStreamer(channel: Channel): Observable<void> {
@@ -61,7 +65,7 @@ export class StorageService {
         );
     }
 
-    updateSettings(settings: Settings): Observable<void> {
+    updateSettings(settings: Partial<Settings>): Observable<void> {
         return this.storage$.pipe(
             map(storage => mergeWith({}, storage, { settings })),
             switchMap(storage => this.setStorage(storage))
@@ -101,9 +105,8 @@ export class StorageService {
 
     get storage$(): Observable<Storage> {
         return new Observable(observer => {
-            this.API_OBJ.storage.local.get(APP_NAME, items => {
-                const updatedStorage: Storage = mergeWith({}, StorageSchema.SKELETON, items[APP_NAME]);
-                observer.next(updatedStorage);
+            this.storage.local.get(APP_NAME, items => {
+                observer.next(this.mergeStorage(items[APP_NAME]));
                 observer.complete();
             });
         });
@@ -111,13 +114,16 @@ export class StorageService {
 
     private setStorage(storage: Storage): Observable<void> {
         return new Observable(observer => {
-            const updatedStorage = mergeWith({}, StorageSchema.SKELETON, storage);
-            const appObj = toObject(APP_NAME, updatedStorage);
-            this.API_OBJ.storage.local.set(appObj, () => {
+            const appObj = toObject(APP_NAME, this.mergeStorage(storage));
+            this.storage.local.set(appObj, () => {
                 observer.next();
                 observer.complete();
             });
         });
+    }
+
+    private mergeStorage(override: Storage): Storage {
+        return mergeWith({}, StorageSchema.SKELETON, override);
     }
 
 }

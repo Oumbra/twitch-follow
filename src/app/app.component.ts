@@ -1,6 +1,7 @@
 import { Component, Inject, NgZone, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatButton } from '@angular/material';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DARK_MODE, WINDOW_OPENNER } from './app.module';
@@ -9,6 +10,7 @@ import { ERoute, getPath } from './enums/route.enums';
 import { StorageSchema } from './models/storage';
 import { StorageService } from './services/storage.service';
 import { ToastService } from './services/toast.service';
+import { DomUtils } from './utils/dom.utils';
 import { MainViewComponent } from './views/main/main-view.component';
 
 @Component({
@@ -27,13 +29,19 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
 
     private viewComponent: AbstractElementComponent<any>;
 
+    form: FormGroup;
+
     constructor(@Inject(WINDOW_OPENNER) private windowOpenner: Subject<boolean>,
                 @Inject(DARK_MODE) private darkMode: Subject<boolean>,
                 private router: Router,
                 private zone: NgZone,
                 private toastSrv: ToastService,
-                protected storageSrv: StorageService) {
+                private storageSrv: StorageService,
+                protected formBuilder: FormBuilder) {
         super();
+        this.form = formBuilder.group({
+            darkMode: new FormControl(false),
+        });
     }
 
     ngOnInit() {
@@ -43,7 +51,19 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
         this.ELEMENTS.uploadInput.accept = this.APPLICATION_JSON;
         this.ELEMENTS.uploadInput.onchange = file => this.readFile(file);
 
+        this.form.get('darkMode').valueChanges
+            .pipe(
+                filter(() => this.form.valid),
+                tap(darkMode => this.darkMode.next(darkMode)),
+                switchMap(bool => this.storageSrv.updateSettings({ darkMode: bool }))
+            )
+            .subscribe(
+                () => console.log('Mise à jour réussi!'),
+                error => this.toastSrv.error(`Une erreur a empéché la mises à jour : ${error}`)
+            );
+
         this.darkMode.subscribe(bool => {
+            this.form.patchValue({ darkMode: bool }, { emitEvent: false });
             if (bool) {
                 this.CLASSES.add('dark');
             } else if (this.CLASSES.contains('dark')) {
@@ -90,6 +110,15 @@ export class AppComponent extends AbstractElementComponent<MatButton> implements
                 },
                 err => this.toastSrv.error(err)
             );
+    }
+
+    onClickSlider($event: MouseEvent) {
+        $event.stopPropagation();
+        const target: any = $event.target;
+        if (DomUtils.notIsOrContains('#dark-mode-toggle', target)) {
+            const el: HTMLElement = document.querySelector('#dark-mode-toggle .mat-slide-toggle-input');
+            el.dispatchEvent(new MouseEvent('click'));
+        }
     }
 
     protected element(): HTMLElement {
