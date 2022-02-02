@@ -6,8 +6,8 @@ const API = IS_MOZILLA ? window.browser : chrome;
 const STREAM_URL = 'https://api.twitch.tv/helix/streams';
 const VALIDATE_URL = 'https://id.twitch.tv/oauth2/validate';
 const TOKEN_URL = 'https://id.twitch.tv/oauth2/token';
-const CLIENT_ID = 'krgx6qmt69q7s5z4mea0tkbivl0cqf';
-const CLIENT_SECRET = 'uv83caoum0ny2x9ihtnad50m5dsehx';
+const CLIENT_ID = 'yabfewgpuklh3vv9sdes9e7lnitdex';
+const CLIENT_SECRET = 'y7vxxzthrfg2vmbelfat5fs9lbplde';
 const APP_NAME = 'TWITCH_FOLLOW';
 const TWITCH_TOKEN_NAME = `${APP_NAME}_TOKEN`;
 

@@ -28,20 +28,32 @@ body {
     
     &:not(.dark) {
         .mat-toolbar {
-            background-color: white;
+            background-color: #ffffff;
             color: $black-color;
+        }
+        .mat-flat-button {
+            border-top: 1px solid $light-grey-color;
         }
         .mat-form-field-label, .mat-slide-toggle-content {
             color: $grey-color !important;
         }
         .mat-snack-bar-container {
-            background: white;
+            background: #ffffff;
             color: $black-color;
+        }
+        .mat-menu-item_slide {
+            color: $dark-grey-color;
+            .mat-icon:first-of-type {
+                color: black !important;
+            }
+            .mat-icon:last-of-type {
+                color: $light-grey-color !important;
+            }
         }
 
         app-streamer {
             &:hover {
-                background-color: aliceblue;
+                background-color: #f0f8ff;
             }
             &_activity {
                 color: $grey-color;
@@ -50,9 +62,23 @@ body {
     }
 
     &.dark {
-        .mat-toolbar {
+        .mat-toolbar, .mat-menu-panel, .mat-menu-item {
             background-color: $dark-grey-color;
             color: $light-grey-color;
+        }
+        .mat-menu-item:hover {
+            background-color: $black-color;
+        }
+        .mat-icon:not(.mat-primary) {
+            color: $light-grey-color;
+        }
+        .mat-menu-item_slide {
+            .mat-icon:first-of-type {
+                color: $grey-color !important;
+            }
+            .mat-icon:last-of-type {
+                color: white !important;
+            }
         }
         .mat-flat-button {
             border-top: 1px solid $grey-color;
@@ -65,7 +91,7 @@ body {
             background-color: $dark-grey-color;
             color: $light-grey-color;
         }
-        
+
         app-streamer {
             &:hover {
                 background-color: $black-color;
@@ -92,59 +118,69 @@ body {
     height: 40px;
 }
 
-.mat-menu-panel {
-    min-height: auto;
-}
+.mat {
+    &-menu {
+        &-panel {
+            min-height: auto !important;
+        }
+        &-content {
+            padding: 4px 0 !important;
+        }
+        &-item {
+            padding: 0 10px 0 5px !important;
 
-.mat-menu-content {
-    padding: 4px 0;
-}
+            &_slide {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
 
-.mat-menu-item {
-    padding: 0 10px 0 5px;
-    height: 30px;
-    line-height: 30px;
-}
-
-.mat-toolbar {
-    font-weight: bold;
-}
-
-.mat-snack-bar-container {
-    display: flex!important;
-    align-content: center;
-    border-radius: 0!important;
-    padding: 0 5px 0 15px!important;
-
-    &--info {
-        border-left: 7px solid $blue-color;
+                .mat-icon {
+                    margin: 0 !important;
+                }
+            }
+        }
     }
-
-    &--warn {
-        border-left: 7px solid $yellow-color;
+    
+    &-toolbar {
+        font-weight: bold;
     }
-
-    &--success {
-        border-left: 7px solid $light-green-color;
+    
+    &-snack-bar-container {
+        display: flex!important;
+        align-content: center;
+        border-radius: 0!important;
+        padding: 0 5px 0 15px!important;
+    
+        &--info {
+            border-left: 7px solid $blue-color;
+        }
+    
+        &--warn {
+            border-left: 7px solid $yellow-color;
+        }
+    
+        &--success {
+            border-left: 7px solid $light-green-color;
+        }
+    
+        &--error {
+            border-left: 7px solid $red-color;
+        }
+    
     }
-
-    &--error {
-        border-left: 7px solid $red-color;
+    
+    &-form-field-label {
+        top: 0 !important;
+        transform: inherit !important;
     }
-
-}
-
-.mat-form-field-label {
-    top: 0 !important;
-    transform: inherit !important;
-}
-
-.mat-slide-toggle-content {
-    white-space: initial!important;
-    overflow: initial!important;
-    text-overflow: initial!important;
-}
-
-.mat-form-field-label, .mat-slide-toggle-content {
-    font-size: 14px !important;
+    
+    &-slide-toggle-content {
+        white-space: initial!important;
+        overflow: initial!important;
+        text-overflow: initial!important;
+    }
+    
+    &-form-field-label, &-slide-toggle-content {
+        font-size: 14px !important;
+    }
 }

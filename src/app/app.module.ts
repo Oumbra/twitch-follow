@@ -13,11 +13,12 @@ import { AsyncImageComponent } from './components/async-image/async-image.compon
 import { BasicToastComponent } from './components/basic-toast/basic-toast.component';
 import { PageComponent } from './components/page/page.component';
 import { StreamerComponent } from './components/streamer/streamer.component';
+import { BouchonApi, IExtensionApi } from './models/local-storage';
 import { AdditionViewComponent } from './views/addition/addition-view.component';
 import { MainViewComponent } from './views/main/main-view.component';
 import { SettingsViewComponent } from './views/settings/settings-view.component';
 
-export const API_OBJECT = new InjectionToken<any>('ApiObject');
+export const API_OBJECT = new InjectionToken<IExtensionApi>('ApiObject');
 export const WINDOW_OPENNER = new InjectionToken<Subject<boolean>>('WindowOpenner');
 export const DARK_MODE = new InjectionToken<Subject<boolean>>('DarkMode');
 
@@ -70,7 +71,9 @@ const COMPONENTS = [
     BasicToastComponent,
   ],
   providers: [
-    { provide: API_OBJECT, useValue: typeof window['browser'] !== 'undefined' ? window['browser'] : chrome},
+    { provide: API_OBJECT, useValue: window.hasOwnProperty('chrome') && window['chrome'].hasOwnProperty('storage') ? window['chrome']
+                                    : window.hasOwnProperty('browser') ? window['browser']
+                                    : new BouchonApi() },
     { provide: WINDOW_OPENNER, useValue: new BehaviorSubject(false)},
     { provide: DARK_MODE, useValue: new BehaviorSubject(false)},
   ],

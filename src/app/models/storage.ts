@@ -11,7 +11,7 @@ export class SettingsSchema implements Settings {
     static readonly SKELETON = new SettingsSchema();
     static readonly PROPS = Object.keys(SettingsSchema.SKELETON);
 
-    refreshTime: number = 5000;
+    refreshTime: number = 10000;
     infiniteNotif: boolean = true;
     darkMode: boolean = false;
 
