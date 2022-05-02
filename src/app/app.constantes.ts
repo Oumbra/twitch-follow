@@ -7,7 +7,7 @@ export const VALIDATE_URL: string = 'https://id.twitch.tv/oauth2/validate';
 export const TOKEN_URL: string = 'https://id.twitch.tv/oauth2/token';
 
 export const CLIENT_ID: string = 'yabfewgpuklh3vv9sdes9e7lnitdex';
-export const CLIENT_SECRET: string = 'y7vxxzthrfg2vmbelfat5fs9lbplde';
+export const CLIENT_SECRET: string = 'rdtdwzhs3wpl3kh4fnaxyhyjjw0oze';
 
 export const APP_NAME: string = 'TWITCH_FOLLOW';
 export const TWITCH_TOKEN_NAME: string = `${APP_NAME}_TOKEN`;
