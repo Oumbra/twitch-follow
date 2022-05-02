@@ -7,7 +7,7 @@ const STREAM_URL = 'https://api.twitch.tv/helix/streams';
 const VALIDATE_URL = 'https://id.twitch.tv/oauth2/validate';
 const TOKEN_URL = 'https://id.twitch.tv/oauth2/token';
 const CLIENT_ID = 'yabfewgpuklh3vv9sdes9e7lnitdex';
-const CLIENT_SECRET = 'y7vxxzthrfg2vmbelfat5fs9lbplde';
+const CLIENT_SECRET = 'rdtdwzhs3wpl3kh4fnaxyhyjjw0oze';
 const APP_NAME = 'TWITCH_FOLLOW';
 const TWITCH_TOKEN_NAME = `${APP_NAME}_TOKEN`;
 
