@@ -1,9 +1,7 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subject } from "rxjs";
-import { debounceTime, filter, switchMap, tap } from "rxjs/operators";
-import { DARK_MODE } from "src/app/app.module";
+import { debounceTime, filter, switchMap } from "rxjs/operators";
 import { AbstractFormComponent } from "src/app/components/abstract-form.component";
 import { SettingsSchema } from "src/app/models/storage";
 import { StorageService } from "src/app/services/storage.service";

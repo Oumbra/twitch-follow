@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ERoute } from './enums/route.enums';
 import { AdditionViewComponent } from './views/addition/addition-view.component';
+import { ImportViewComponent } from './views/import/import-view.component';
 import { MainViewComponent } from './views/main/main-view.component';
 import { SettingsViewComponent } from './views/settings/settings-view.component';
 
@@ -29,6 +30,10 @@ const routes: Routes = [
     {
         path: ERoute.SETTINGS,
         component: SettingsViewComponent,
+    },
+    {
+        path: ERoute.IMPORT,
+        component: ImportViewComponent,
     }
 ];
 

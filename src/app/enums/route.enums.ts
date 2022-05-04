@@ -1,7 +1,8 @@
 export enum ERoute {
+    ADDITION = 'addition',
+    IMPORT = 'import',
     MAIN = 'main',
-    SETTINGS = 'settings',
-    ADDITION = 'addition'
+    SETTINGS = 'settings'
 }
 
 export const getPath = (route: ERoute): string => `/${route}`;
